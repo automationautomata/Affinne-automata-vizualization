@@ -78,20 +78,23 @@ if slopecoef_2adic < 0:
 x_prev = ceil(x_prev) if x_prev % 1 != 0 else x_prev + step
 y_prev += 1
 print("---", x_prev, y_prev)
-y_tmp = 0.1
+y_tmp = set()
 for t in range(0, frac.denominator*step, step):
   y_st = freecoef_2adic + slopecoef_2adic*(t+x_prev)
   tmp = (y_st - freecoef_2adic)/slopecoef_2adic
   print(t, 'y', tmp, y_st)
   if y_st % 1 == 0:
-     y_tmp = y_st
+     y_tmp.add(y_st)
   points.append((round(tmp, 5), round(y_st , 5)))
-for t in range(0, abs(frac.numerator)): 
-  if y_tmp != t+y_prev:
+limit = abs(frac.numerator) - 1 
+for t in range(0, limit): 
+  if t+y_prev not in y_tmp:
     x_st = (t+y_prev - freecoef_2adic)/slopecoef_2adic
     tmp = slopecoef_2adic*x_st + freecoef_2adic
     print(t, 'x', x_st, tmp)
     points.append((round(x_st, 5), round(tmp, 5)))
+  else:
+     limit+=1
 # print(points)
 # plt.grid(True)
 
