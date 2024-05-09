@@ -10,6 +10,8 @@ class MainWindow(QMainWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
         self._setup_ui()
+        self.graph = Graph()
+
 
     def _setup_ui(self, label_width = 60, std_height = 30, input_width = 140, size_x = 1000, size_y = 500):
         # General settings for the window
@@ -50,26 +52,30 @@ class MainWindow(QMainWindow):
         if self.__input_points_num__.text() == '':
             self.__msgBox__.setText("Error: enter precision")
             self.__msgBox__.exec()
-        elif '/' in a and int(a[-1]) % 2 == 0:
+        elif '/' in b and int(b[-1]) % 2 == 0:
             self.__msgBox__.setText("Error: slope coefficient isn't correct")
             self.__msgBox__.exec()
-        elif '/' in b and int(b[-1]) % 2 == 0:
+        elif '/' in a and int(a[-1]) % 2 == 0:
             self.__msgBox__.setText("Error: free coefficient isn't correct")
             self.__msgBox__.exec()
         else:
-            self.function = LiniarFunction(a, b, int(self.__input_points_num__.text()))
-            self.__functionWidget__.set_functioninfo(self.function.info())
-            self.graph = Graph()
-            self.graph.drawtorus(Plotter(), int(self.__input_points_num__.text()))
-            colors = self.graph.generatecolors(self.function.cablenum())
+            self.linfunction = LiniarFunction(b, a, int(self.__input_points_num__.text()))
+            self.__functionWidget__.set_functioninfo(self.linfunction.info())
+            plotter = Plotter()
+            if self.graph.plotter:
+                self.graph.plotter.close()
+            self.graph.drawtorus(plotter, int(self.__input_points_num__.text()))
+            colors = self.graph.generatecolors(self.linfunction.cablenum())
+            cables = self.linfunction.divideoncables()
+            self.graph.drawcables(self.linfunction.divideoncables(), colors)
+
             comments = []
             for i in range(len(colors)):
-                comment = r'$\dfrac{' + self.function.freecoefs[i].numerator + r'}' + \
-                                     r'{' + self.function.freecoefs[i].denominator + r'}$'
+                comment = r'$\dfrac{' + str(self.linfunction.freecoefs[i].numerator) + r'}' + \
+                                     r'{' + str(self.linfunction.freecoefs[i].denominator) + r'}$'
                 comments.append(comment)
-            self.graph.drawcables(self.function.divideoncables(), colors)
-            self.graph.drawplot(self.function.divideoncables(self), colors, comments)
-            #self.function.divideonlines()
-            #data = [line.calc(100) for line in self.function.lines]
+            self.graph.drawplot(cables, colors, comments)
+            #self.linfunction.divideonlines()
+            #data = [line.calc(100) for line in self.linfunction.lines]
             #self.graph.addknot(data)
             self.graph.plotter.show()

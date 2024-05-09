@@ -3,6 +3,7 @@ from numpy.linalg import norm
 import pyvista as pv
 from vg import angle
 import matplotlib.pyplot as plt
+from matplotlib.lines import Line2D
 
 class Graph:
     major_radius = 1/np.pi
@@ -10,7 +11,9 @@ class Graph:
     y_axe = np.array([0, major_radius, 0])
     z_axe = np.array([0, 0, minor_radius])
     x_axe = np.array([minor_radius, 0, 0])
-
+    def __init__(self):
+        self.plotter = None
+        pass
     def __planecoords(self, vec):
         proj = vec - (np.dot(vec, self.z_axe)/norm(self.z_axe)**2)*self.z_axe
         proj *= self.radius/norm(proj)
@@ -52,7 +55,7 @@ class Graph:
         y = (b + a*np.cos(u)) * np.sin(v)
         z = a * np.sin(u)
         self.plotter.add_mesh(pv.StructuredGrid(x, y, z), style="surface", show_edges=True,
-               scalar_bar_args={'vertical': True}, color="k", pickable=True)
+               scalar_bar_args={'vertical': True}, color="pink", pickable=True)
 
         # Define a simple linear surface
   
@@ -88,15 +91,16 @@ class Graph:
 
     def drawcables(self, cables, colors):
         for i in range(len(cables)):
-            self.drawcable(cables[i], colors[i][:-1])
+            self.drawcable(cables[i], colors[i])
         #self.plotter.show() 
 
     def drawplot(self, cables, colors, comments):
+        legend = []
         for i in range(len(cables)):
             for line in cables[i]:
-                plt.plot(line[0], line[1], 
-                         legend=comments[i], 
-                         color=colors[i])
-        plt.legend()
+                plt.plot(line[0], line[1], color=colors[i][:3])
+            legend.append(Line2D([0], [0], color=colors[i][:3], lw=4, label=comments[i]))
+        #_, ax = plt.subplots()
+        plt.legend(handles=legend, loc='upper right', framealpha=0.2)
         plt.grid(True)
         plt.show(block=False)

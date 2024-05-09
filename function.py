@@ -56,15 +56,15 @@ class LiniarFunction:
         # result store power of A that raised 
         # to the power N-1
         result = 1
-        K = 1
-        while (K < N) :
+        k = 1
+        while (k <= N):
             # modular arithmetic
             result = (result * A) % N 
             # return smallest + ve integer
             if (result == 1) :
-                return K
+                return k
             # increment power
-            K = K + 1
+            k = k + 1
         return -1
 
     def cablenum(self):
@@ -86,25 +86,26 @@ class LiniarFunction:
         x_prev = -freecoef/slopecoef
         y_prev = 0
         points = [(x_prev, y_prev)]
+
         step = 1
-        if slopecoef < 0:
+        if freecoef < 0:
             step = -1
         x_prev = ceil(x_prev) if x_prev % 1 != 0 else x_prev + 1
         y_prev += 1
         y_tmp = set()
 
-        for i in range(0, self.slopecoef_rat.denominator*step, step):
-            cur_y = i+x_prev
-            cur_x = (cur_y - freecoef)/slopecoef
+        for t in range(0, self.slopecoef_rat.denominator*step, step):
+            cur_x = t+x_prev
+            cur_y = freecoef + slopecoef*(cur_x)
             if cur_y % 1 == 0:
                 y_tmp.add(cur_y)
             points.append((round(cur_x, 5), round(cur_y , 5)))
         
         limit = abs(self.slopecoef_rat.numerator)
-        for i in range(limit): 
-            if i+y_prev not in y_tmp:
-                cur_x = i+y_prev
-                cur_y = slopecoef*cur_x + freecoef
+        for t in range(0, limit): 
+            if t+y_prev not in y_tmp:
+                cur_y = t+y_prev
+                cur_x = (cur_y - freecoef)/slopecoef
                 points.append((round(cur_x, 5), round(cur_y, 5)))
             else:
                 limit+=1
