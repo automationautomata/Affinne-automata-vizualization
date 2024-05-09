@@ -1,8 +1,6 @@
 from fractions import Fraction
 from math import gcd, ceil
 import numpy as np
-import matplotlib as mpl
-import matplotlib.pyplot as plt
 
 class Line:
     def __init__(self, x1, y1, x2, y2):
@@ -17,9 +15,6 @@ class Line:
         return x, y
     
 class LiniarFunction:
-    def __init__(self, slopecoef, freecoef):
-        self(slopecoef, freecoef, 0)
-        return
     def __init__(self, slopecoef, freecoef, precision):
         self.precision = precision
         self.slopecoef_rat = Fraction(slopecoef)
@@ -72,7 +67,7 @@ class LiniarFunction:
             K = K + 1
         return -1
 
-    def knotnum(self):
+    def cablenum(self):
         e = gcd(self.freecoef_rat.denominator, self.slopecoef_rat.denominator)
         return self.multiplicativeOrder(2, int(self.freecoef_rat.denominator/e))
     
@@ -81,8 +76,8 @@ class LiniarFunction:
 
         numbers_info = f"{self.freecoef_rat} = {format(self.freecoef_2adic)}\
                         \n{self.slopecoef_rat} = {format(self.slopecoef_2adic)}"
-        knot_info = f"number of knots: {self.knotnum()}\n" #knot turns around the inner circle: {}"
-        return f"{numbers_info}\n\n{knot_info}"
+        cable_info = f"number of cables: {self.cablenum()}\n" #cable turns around the inner circle: {}"
+        return f"{numbers_info}\n\n{cable_info}"
     
     def divideonlines(self, freecoef_rat):
         freecoef = float(freecoef_rat)
@@ -94,29 +89,31 @@ class LiniarFunction:
         step = 1
         if slopecoef < 0:
             step = -1
-        x_prev = ceil(x_prev) if x_prev % 1 != 0 else x_prev + step
+        x_prev = ceil(x_prev) if x_prev % 1 != 0 else x_prev + 1
         y_prev += 1
         y_tmp = set()
 
         for i in range(0, self.slopecoef_rat.denominator*step, step):
-            cur_y = freecoef + slopecoef*(i+x_prev)
+            cur_y = i+x_prev
             cur_x = (cur_y - freecoef)/slopecoef
             if cur_y % 1 == 0:
                 y_tmp.add(cur_y)
             points.append((round(cur_x, 5), round(cur_y , 5)))
         
-        limit = abs(self.slopecoef_rat.numerator) - 1 
+        limit = abs(self.slopecoef_rat.numerator)
         for i in range(limit): 
             if i+y_prev not in y_tmp:
-                cur_x = (i+y_prev - freecoef)/slopecoef
+                cur_x = i+y_prev
                 cur_y = slopecoef*cur_x + freecoef
                 points.append((round(cur_x, 5), round(cur_y, 5)))
             else:
                 limit+=1
-
-        points = sorted(points, key=lambda vec: (vec[0]**2 + vec[1]**2)**0.5, reverse=self.slopecoef_rat.numerator<0)
+        
+        sort_func = lambda vec: ((vec[0] - points[0][0])**2 + (vec[1] - points[0][1])**2)**0.5
+        points = sorted(points, key=sort_func, reverse=self.slopecoef_rat.numerator<0)
         lines = []
         data = []
+
         mod1 = lambda val: val%1 if val%1 != 0 else 1
         for i in range(1, len(points)):
             if points[i][1] < points[i-1][1]:
@@ -129,17 +126,12 @@ class LiniarFunction:
             end_x = mod1(points[i][0])
             lines.append(Line(start_x, start_y, end_x, end_y))
             data.append(lines[i-1].calc(self.precision))
-        #     plt.plot(data[0], data[1])
-        # plt.legend()
-        # plt.grid(True)
-        # plt.show()
-        self.lines = lines
         return data
     
-    def divideonknots(self):
-        knots = []
-        for i in range(self.knotnum()):
-            knots.append(self.divideonlines((-self.freecoef_rat*2**i)%1))  
-        return knots
-
-
+    def divideoncables(self):
+        cables = []
+        self.freecoefs = []
+        for i in range(self.cablenum()):
+            self.freecoefs.append((-self.freecoef_rat*2**i)%1)
+            cables.append(self.divideonlines(self.freecoefs[i]))  
+        return cables

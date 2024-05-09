@@ -1,9 +1,9 @@
 from PyQt6.QtWidgets import QLabel, QMainWindow, QVBoxLayout, \
                             QLineEdit, QPushButton, QMessageBox
-from PyQt6.QtGui import QFont, QRegularExpressionValidator
-from PyQt6.QtCore import QRegularExpression
-from graphic import Torus
-from widgets import FunctionWidget, LiniarFunction
+from PyQt6.QtGui import QFont
+from graphic import Graph
+from widgets import FunctionWidget
+from function import LiniarFunction
 from pyvista import Plotter
 
 class MainWindow(QMainWindow):
@@ -15,47 +15,61 @@ class MainWindow(QMainWindow):
         # General settings for the window
         self.setWindowTitle("PyMAPDL example application")
         self.resize(size_x, size_y)
-        
-        self._points_num_label = QLabel(self)
-        self._points_num_label.setFont(QFont('Arial', 12))
-        self._points_num_label.setText("Surface precision")
-        self._points_num_label.resize(input_width, std_height)
+        self.__msgBox__ = QMessageBox()
 
-        self._input_points_num = QLineEdit(self)
-        self._input_points_num.setFont(QFont('Arial', 15))
-        self._input_points_num.resize(input_width, std_height)
-        self._input_points_num.move(input_width, 0)
-        
-        self._layout = QVBoxLayout()
-        self._layout.setContentsMargins(0, 0, 0, 0)
+        self.__points_num_label__ = QLabel(self)
+        self.__points_num_label__.setFont(QFont('Arial', 12))
+        self.__points_num_label__.setText(" Precision")
+        self.__points_num_label__.resize(input_width - 60, std_height)
 
-        self._functionWidget = FunctionWidget(self)
-        self._functionWidget.resize(500, 500) 
-        self._functionWidget.move(0, std_height) 
-        self._functionWidget.setsize(std_height, label_width, input_width)
-        self._functionWidget.setposition(10, 10)
+        self.__input_points_num__ = QLineEdit(self)
+        self.__input_points_num__.setFont(QFont('Arial', 15))
+        self.__input_points_num__.resize(input_width, std_height)
+        self.__input_points_num__.move(input_width - 60, 0)
+        
+        self.__layout__ = QVBoxLayout()
+        self.__layout__.setContentsMargins(0, 0, 0, 0)
+
+        self.__functionWidget__ = FunctionWidget(self)
+        self.__functionWidget__.resize(400, 500) 
+        self.__functionWidget__.move(0, std_height) 
+        self.__functionWidget__.setsize(std_height, label_width, input_width)
+        self.__functionWidget__.setposition(10, 10)
         
         self.__drawbutton__ = QPushButton(self)
         self.__drawbutton__.setFont(QFont('Arial', 12))
         self.__drawbutton__.setText("Draw")
-        self.msgBox = QMessageBox()
         self.__drawbutton__.clicked.connect(self.onclick)
+        self.__drawbutton__.move(self.__functionWidget__.width() + 10 , std_height + 10)
 
     def onclick(self):
-        a, b, prec = self._functionWidget.getinput()
+        a, b = self.__functionWidget__.getinput()
         if a == '' or b == '':
-            self.msgBox.setText("Error: enter coefficients")
-            self.msgBox.exec()
-        elif prec == '' and '/' in a and '/' in b:
-            self.msgBox.setText("Error: enter precision")
-            self.msgBox.exec()
+            if a == '': a = '0' 
+            if b == '': b = '0'
+        if self.__input_points_num__.text() == '':
+            self.__msgBox__.setText("Error: enter precision")
+            self.__msgBox__.exec()
+        elif '/' in a and int(a[-1]) % 2 == 0:
+            self.__msgBox__.setText("Error: slope coefficient isn't correct")
+            self.__msgBox__.exec()
+        elif '/' in b and int(b[-1]) % 2 == 0:
+            self.__msgBox__.setText("Error: free coefficient isn't correct")
+            self.__msgBox__.exec()
         else:
-            self.linearFunction = LiniarFunction(a, b, int(prec))
-            self.linearFunction.info()
-            self._label_out.setText(self.linearFunction.info())
-            self.surface = Torus()
-            self.surface.drawtorus(Plotter())
-            self.linearFunction.divideonlines()
-            data = [line.calc(100) for line in self.linearFunction.lines]
-            #self.surface.addknot(data)
-            self.surface.plotter.show()
+            self.function = LiniarFunction(a, b, int(self.__input_points_num__.text()))
+            self.__functionWidget__.set_functioninfo(self.function.info())
+            self.graph = Graph()
+            self.graph.drawtorus(Plotter(), int(self.__input_points_num__.text()))
+            colors = self.graph.generatecolors(self.function.cablenum())
+            comments = []
+            for i in range(len(colors)):
+                comment = r'$\dfrac{' + self.function.freecoefs[i].numerator + r'}' + \
+                                     r'{' + self.function.freecoefs[i].denominator + r'}$'
+                comments.append(comment)
+            self.graph.drawcables(self.function.divideoncables(), colors)
+            self.graph.drawplot(self.function.divideoncables(self), colors, comments)
+            #self.function.divideonlines()
+            #data = [line.calc(100) for line in self.function.lines]
+            #self.graph.addknot(data)
+            self.graph.plotter.show()
