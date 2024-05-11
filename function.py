@@ -51,8 +51,8 @@ class LiniarFunction:
         return bin(result^(cycle << numbers[int(numer)]))[2:], bin(cycle)[2:], i - numbers[int(numer)], numbers[int(numer)]
     
     def multiplicativeOrder(self, A, N) :
-        if (gcd(A, N ) != 1) :
-            return -1
+        if (gcd(A, N) != 1) :
+            return 1
         # result store power of A that raised 
         # to the power N-1
         result = 1
@@ -65,7 +65,7 @@ class LiniarFunction:
                 return k
             # increment power
             k = k + 1
-        return -1
+        return 1
 
     def cablenum(self):
         e = gcd(self.freecoef_rat.denominator, self.slopecoef_rat.denominator)
@@ -92,7 +92,15 @@ class LiniarFunction:
     #         x_prev = round(x_prev) if x_prev % 1 != 0 else x_prev + step
     #         y_prev += 1
     #         y_tmp = set()
-
+# 5/11 :  [[-0.93506     7.        ]
+#  [ 1.         -6.54545   ]
+#  [-0.79221     6.        ]
+#  [-0.64935     5.        ]
+#  [-0.50649     4.        ]
+#  [-0.36364     3.        ]
+#  [-0.22078     2.        ]
+#  [-0.07792     1.        ]
+#  [ 0.06493506  0.        ]]
     #         for t in range(0, freecoef_rat.denominator*step, step):
     #             cur_x = t+x_prev
     #             cur_y = round(freecoef + slopecoef*(cur_x), 5)
@@ -157,9 +165,12 @@ class LiniarFunction:
                     points.append((round(cur_x, 5), round(cur_y, 5)))
                 else:
                     limit+=1
-            
+            start = (0, 0)
+            dist = lambda vec: ((vec[0] - start[0])**2 + (vec[1] - start[1])**2)**0.5
+            tmp =  max(points, key=dist)
             sort_func = lambda vec: ((vec[0] - points[0][0])**2 + (vec[1] - points[0][1])**2)**0.5
-            points = sorted(points, key=sort_func, reverse=self.slopecoef_rat.numerator<0)
+            points = sorted(points, key=dist)
+            #print(freecoef_rat, ': ',np.array(points))
         else:
             points = [(0, freecoef)]
         lines = []
@@ -167,14 +178,18 @@ class LiniarFunction:
 
         mod1 = lambda val: val%1 if val%1 != 0 else 1
         for i in range(1, len(points)):
-            if points[i][1] < points[i-1][1]:
+            if points[i][1] <= points[i-1][1]:
                 start_y = mod1(points[i-1][1])
                 end_y = points[i][1]%1
             else:
                 end_y = mod1(points[i][1])
                 start_y = points[i-1][1]%1
+                if freecoef == 1/11:
+                    print('---', t)
             start_x = points[i-1][0]%1
             end_x = mod1(points[i][0])
+            if freecoef == 1/11:
+                    print('---', start_x, start_y, end_x, end_y)
             lines.append(Line(start_x, start_y, end_x, end_y))
             data.append(lines[i-1].calc(self.precision))
         return data

@@ -1,137 +1,139 @@
-import pyvista as pv
-from pyvistaqt import BackgroundPlotter, QtInteractor
-from PyQt6.QtWidgets import QApplication, QWidget, QMainWindow
-import sys
-from mainwindow import MainWindow
+# import pyvista as pv
+# from pyvistaqt import BackgroundPlotter, QtInteractor
+# from PyQt6.QtWidgets import QApplication, QWidget, QMainWindow
+# import sys
+# from mainwindow import MainWindow
 
-# Только для доступа к аргументам командной строки
-# Приложению нужен один (и только один) экземпляр QApplication.
-# Передаём sys.argv, чтобы разрешить аргументы командной строки для приложения.
-# Если не будете использовать аргументы командной строки, QApplication([]) тоже работает
-app = QApplication(sys.argv)
+# #plotter.show()
+# # tm = pv.Plotter()
+# # tm.show_grid()
+# # tm.show()
+#  # Только для доступа к аргументам командной строки
+# # Приложению нужен один (и только один) экземпляр QApplication.
+# # Передаём sys.argv, чтобы разрешить аргументы командной строки для приложения.
+# # Если не будете использовать аргументы командной строки, QApplication([]) тоже работает
+# app = QApplication(sys.argv)
 
-# Создаём виджет Qt — окно.
-window = MainWindow()
-#app.quit = window.graph.close
+# #tg = TorusGraphic()
+# #tg.drawtorus(BackgroundPlotter(app=app))
+# #tg.plotter.show()
+# # Создаём виджет Qt — окно.
+# window = MainWindow()
+# #app.quit = window.graph.close
 
-# from pyvistaqt import BackgroundPlotter
-# plotter = BackgroundPlotter(toolbar=False, menu_bar=False)
-# plotter.interactor = window
-# _ = plotter.add_mesh(s)
-# #window.resize(600, 400)
-# plotter.enable_point_picking(callback=callback, show_message=True, use_mesh=True, 
-#                                     show_point=True, point_size=10, left_clicking=True)
-# window.setCentralWidget()
-window.show()
-# window.surface.plotter.show()
-sys.exit(app.exec())
-
-
+# # from pyvistaqt import BackgroundPlotter
+# # plotter = BackgroundPlotter(toolbar=False, menu_bar=False)
+# # plotter.interactor = window
+# # _ = plotter.add_mesh(s)
+# # #window.resize(600, 400)
+# # plotter.enable_point_picking(callback=callback, show_message=True, use_mesh=True, 
+# #                                     show_point=True, point_size=10, left_clicking=True)
+# # window.setCentralWidget()
+# window.show()
+# # window.surface.plotter.show()
+# sys.exit(app.exec())
 # Запускаем цикл событий.
-# from math import ceil
-# import numpy as np
-# import matplotlib as mpl
-# import matplotlib.pyplot as plt
-# from fractions import Fraction
-# class Line:
-#     def __init__(self, x1, y1, x2, y2):
-#         self.x1, self.x2 = x1, x2
-#         self.y1, self.y2 = y1, y2
-#         #print('line', x1, y1, x2, y2)
-#     def calc(self, number):
-#         x = np.linspace(self.x1, self.x2, number)
-#         #print('-', self.x1, self.y1, self.x2, self.y2)
-#         k = (self.y2 - self.y1) / (self.x2 - self.x1)
-#         b = self.y1 - self.x1*k
-#         #print("--", k, b)
-#         y = x*k + b
-#         return x, y
+from math import ceil
+import numpy as np
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+from fractions import Fraction
+class Line:
+    def __init__(self, x1, y1, x2, y2):
+        self.x1, self.x2 = x1, x2
+        self.y1, self.y2 = y1, y2
+        #print('line', x1, y1, x2, y2)
+    def calc(self, number):
+        x = np.linspace(self.x1, self.x2, number)
+        #print('-', self.x1, self.y1, self.x2, self.y2)
+        k = (self.y2 - self.y1) / (self.x2 - self.x1)
+        b = self.y1 - self.x1*k
+        #print("--", k, b)
+        y = x*k + b
+        return x, y
 
-# def func(color, freecoef_2adic, frac):
-#   slopecoef_2adic = float(frac)
-#   x = np.linspace(0, 1, 50)
-#   y = slopecoef_2adic * x + freecoef_2adic
-#   # plt.grid(True)
-#   # plt.scatter(x, y,  s = 2)
-#   # plt.show()
-#   lines = []
-#   i = 0
-#   # fig = plt.figure()
-#   j = 0
-#   x = []
-#   y = []
-#   x_prev = -freecoef_2adic/slopecoef_2adic
-#   y_prev = 0
-#   points = [(x_prev, y_prev)]
-#   print("---", x_prev, y_prev)
-#   step = 1
-#   if slopecoef_2adic < 0:
-#     step = -1
-#   x_prev = round(x_prev) if x_prev % 1 != 0 else x_prev + step
-#   y_prev += 1
-#   print("---", x_prev, y_prev)
-#   y_tmp = set()
-#   for t in range(0, frac.denominator*step, step):
-#     tmp = t+x_prev
-#     y_st = freecoef_2adic + slopecoef_2adic*(tmp)
-#     print(t, 'y', tmp, y_st)
-#     if round(y_st , 5) % 1 == 0:
-#       y_tmp.add(int(round(y_st , 5)))
-#     points.append((round(tmp, 5), round(y_st , 5)))
-#   limit = abs(frac.numerator) - 1
-#   print(y_prev)
-#   for t in range(0, step*limit, step): 
-#     if t+y_prev not in y_tmp:
-#       tmp = t+y_prev
-#       x_st = (tmp - freecoef_2adic)/slopecoef_2adic
-#       print(t, 'x', round(x_st, 5), round(tmp, 5))
-#       points.append((round(x_st, 5), round(tmp, 5)))
-#     else:
-#       limit+=1
-#       print('----')
-#   # print(points)
-#   # plt.grid(True)
-#   print(points)
-#   print(frac.numerator<0)
-#   start = max(points, key=lambda vec: (vec[0]**2 + vec[1]**2)**0.5)
-#   print(start)
-#   points = sorted(points, key=lambda vec: ((vec[0] - start[0])**2 + (vec[1] - start[1])**2)**0.5)[::-1]
-#   #if step > 0: points = points[::-1]
-#   print(list(map(lambda vec: ((vec[0] - start[0])**2 + (vec[1] - start[1])**2)**0.5, points)))
-#   print(np.array(points))
-#   x = []
-#   y =[]
-#   # plt.grid(True)
-#   # plt.scatter([i[0] for i in points], [i[1] for i in points],  s = 3)
-#   # plt.show()
-#   mod1 = lambda val: val%1 if val%1 != 0 else 1
-#   lines = []
-#   for i in range(1, len(points)):
-#     if points[i][1] < points[i-1][1]:
-#         start_y = mod1(points[i-1][1])
-#         end_y = points[i][1]%1
-#         print('--', end=' ')
-#     else:
-#         end_y = mod1(points[i][1])
-#         start_y = points[i-1][1]%1
-#     start_x = points[i-1][0]%1
-#     end_x = mod1(points[i][0])
-#     lines.append(Line(start_x, start_y, end_x, end_y))
-#     print(i, ":", start_x, start_y, end_x, end_y)
-#     tx, ty = lines[i-1].calc(10)
-#     plt.plot(tx, ty, color = color)
-#   x = np.array(x)
-#   y = np.array(y)
-#   data = [line.calc(50) for line in lines]
-#   x, y = lines[0].calc(10)
-# # freecoef_2adic = float(Fraction('2/3'))
-# # frac = Fraction('3/5')
-# func("blue", float(Fraction('1/5')), Fraction('3/5'))
-# func("red", float(Fraction('1/11')), Fraction('7'))
-# #func("green", float(Fraction('2/3')), Fraction('-2'))
-# plt.legend()
-# plt.grid(True)
-# plt.show()
+def func(color, freecoef_2adic, frac):
+  slopecoef_2adic = float(frac)
+  x = np.linspace(0, 1, 50)
+  y = slopecoef_2adic * x + freecoef_2adic
+  # plt.grid(True)
+  # plt.scatter(x, y,  s = 2)
+  # plt.show()
+  lines = []
+  i = 0
+  # fig = plt.figure()
+  j = 0
+  x = []
+  y = []
+  x_prev = -freecoef_2adic/slopecoef_2adic
+  y_prev = 0
+  points = [(x_prev, y_prev)]
+  print("---", x_prev, y_prev)
+  step = 1
+  if slopecoef_2adic < 0:
+    step = -1
+  x_prev = round(x_prev) if x_prev % 1 != 0 else x_prev + step
+  y_prev += 1
+  print("---", x_prev, y_prev)
+  y_tmp = set()
+  for t in range(0, frac.denominator*step, step):
+    tmp = t+x_prev
+    y_st = freecoef_2adic + slopecoef_2adic*(tmp)
+    print(t, 'y', tmp, y_st)
+    if round(y_st , 5) % 1 == 0:
+      y_tmp.add(int(round(y_st , 5)))
+    points.append((round(tmp, 5), round(y_st , 5)))
+  limit = abs(frac.numerator)
+  print(y_prev)
+  for t in range(0, step*limit, step): 
+    if t+y_prev not in y_tmp:
+      tmp = t+y_prev
+      x_st = (tmp - freecoef_2adic)/slopecoef_2adic
+      print(t, 'x', round(x_st, 5), round(tmp, 5))
+      points.append((round(x_st, 5), round(tmp, 5)))
+    else:
+      limit+=1
+      print('----')
+  # print(points)
+  # plt.grid(True)
+  print(points)
+  print(frac.numerator<0)
+  start = max(points, key=lambda vec: (vec[0]**2 + vec[1]**2)**0.5)
+  print(start)
+  points = sorted(points, key=lambda vec: ((vec[0] - start[0])**2 + (vec[1] - start[1])**2)**0.5)[::-1]
+  print(list(map(lambda vec: ((vec[0] - start[0])**2 + (vec[1] - start[1])**2)**0.5, points)))
+  print(np.array(points))
+  x = []
+  y =[]
+  # plt.grid(True)
+  # plt.scatter([i[0] for i in points], [i[1] for i in points],  s = 3)
+  # plt.show()
+  mod1 = lambda val: val%1 if val%1 != 0 else 1
+  lines = []
+  for i in range(1, len(points)):
+    if step < 0:
+        start_y = mod1(points[i-1][1])
+        end_y = points[i][1]%1
+    else:
+        end_y = mod1(points[i][1])
+        start_y = points[i-1][1]%1
+    start_x = points[i-1][0]%1
+    end_x = mod1(points[i][0])
+    lines.append(Line(start_x, start_y, end_x, end_y))
+    print(i, ":", start_x, start_y, end_x, end_y)
+    tx, ty = lines[i-1].calc(10)
+    plt.plot(tx, ty, color = color)
+  x = np.array(x)
+  y = np.array(y)
+  data = [line.calc(50) for line in lines]
+  x, y = lines[0].calc(10)
+# freecoef_2adic = float(Fraction('2/3'))
+# frac = Fraction('3/5')
+func("blue", float(Fraction('1/3')), Fraction('-2'))
+#func("green", float(Fraction('-2/3')), Fraction('-1/11'))
+plt.legend()
+plt.grid(True)
+plt.show()
 
 # # import pyvista as pv
 # # def _toruscoords(vec):
