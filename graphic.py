@@ -55,7 +55,7 @@ class Graph:
         y = (b + a*np.cos(u)) * np.sin(v)
         z = a * np.sin(u)
         self.plotter.add_mesh(pv.StructuredGrid(x, y, z), style="surface", show_edges=True,
-               scalar_bar_args={'vertical': True}, color="pink", pickable=True)
+               scalar_bar_args={'vertical': True}, color="pink", pickable=True, smooth_shading=True)
 
         # Define a simple linear surface
   
@@ -87,7 +87,8 @@ class Graph:
             # x = array[1]*2*np.pi
             points = self.__toruscoords__(cable[t][1], cable[t][0])
             mesh = pv.Spline(np.column_stack(points))
-            self.plotter.add_mesh(mesh, show_edges=True, color=color, line_width=10)  
+            self.plotter.add_mesh(mesh, show_edges=True, color=color, render_lines_as_tubes=True, 
+                                  smooth_shading=True, line_width=10) 
 
     def drawcables(self, cables, colors):
         for i in range(len(cables)):
@@ -104,3 +105,9 @@ class Graph:
         plt.legend(handles=legend, loc='upper right', framealpha=0.2)
         plt.grid(True)
         plt.show(block=False)
+    
+    def close(self):
+        plt.close('all')
+        if self.plotter:
+            self.plotter.close()
+            self.plotter.deep_clean()

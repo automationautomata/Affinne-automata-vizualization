@@ -1,6 +1,8 @@
 from PyQt6.QtWidgets import QLabel, QMainWindow, QVBoxLayout, \
                             QLineEdit, QPushButton, QMessageBox
-from PyQt6.QtGui import QFont
+from PyQt6.QtGui import QFont, QRegularExpressionValidator
+from PyQt6.QtCore import QRegularExpression
+from matplotlib import pyplot as plt
 from graphic import Graph
 from widgets import FunctionWidget
 from function import LiniarFunction
@@ -11,7 +13,6 @@ class MainWindow(QMainWindow):
         super().__init__(parent)
         self._setup_ui()
         self.graph = Graph()
-
 
     def _setup_ui(self, label_width = 60, std_height = 30, input_width = 140, size_x = 1000, size_y = 500):
         # General settings for the window
@@ -28,7 +29,9 @@ class MainWindow(QMainWindow):
         self.__input_points_num__.setFont(QFont('Arial', 15))
         self.__input_points_num__.resize(input_width, std_height)
         self.__input_points_num__.move(input_width - 60, 0)
-        
+        valid = QRegularExpressionValidator(QRegularExpression("[1-9][0-9]*"))
+        self.__input_points_num__.setValidator(valid)
+
         self.__layout__ = QVBoxLayout()
         self.__layout__.setContentsMargins(0, 0, 0, 0)
 
@@ -44,13 +47,18 @@ class MainWindow(QMainWindow):
         self.__drawbutton__.clicked.connect(self.onclick)
         self.__drawbutton__.move(self.__functionWidget__.width() + 10 , std_height + 10)
 
+    def onquit(self):
+        if self.graph.plotter:
+            self.graph.plotter.close()
+        plt.close('all')    
     def onclick(self):
         a, b = self.__functionWidget__.getinput()
-        if a == '' or b == '':
-            if a == '': a = '0' 
-            if b == '': b = '0'
+        precision = int(self.__input_points_num__.text())
         if self.__input_points_num__.text() == '':
             self.__msgBox__.setText("Error: enter precision")
+            self.__msgBox__.exec()
+        elif precision < 10:
+            self.__msgBox__.setText("Error: small precision")
             self.__msgBox__.exec()
         elif '/' in b and int(b[-1]) % 2 == 0:
             self.__msgBox__.setText("Error: slope coefficient isn't correct")
@@ -59,12 +67,16 @@ class MainWindow(QMainWindow):
             self.__msgBox__.setText("Error: free coefficient isn't correct")
             self.__msgBox__.exec()
         else:
-            self.linfunction = LiniarFunction(b, a, int(self.__input_points_num__.text()))
+            if a == '' or b == '':
+                if a == '': a = '0' 
+                if b == '': b = '0'
+            self.linfunction = LiniarFunction(b, a, precision)
             self.__functionWidget__.set_functioninfo(self.linfunction.info())
-            plotter = Plotter()
+            plotter = Plotter(line_smoothing=True, polygon_smoothing=True)
             if self.graph.plotter:
+                self.graph.plotter.deep_clean()
                 self.graph.plotter.close()
-            self.graph.drawtorus(plotter, int(self.__input_points_num__.text()))
+            self.graph.drawtorus(plotter, precision)
             colors = self.graph.generatecolors(self.linfunction.cablenum())
             cables = self.linfunction.divideoncables()
             self.graph.drawcables(self.linfunction.divideoncables(), colors)
@@ -72,10 +84,15 @@ class MainWindow(QMainWindow):
             comments = []
             for i in range(len(colors)):
                 comment = r'$\dfrac{' + str(self.linfunction.freecoefs[i].numerator) + r'}' + \
-                                     r'{' + str(self.linfunction.freecoefs[i].denominator) + r'}$'
+                                 r'{' + str(self.linfunction.freecoefs[i].denominator) + r'}$'
                 comments.append(comment)
+            plt.close('all')
             self.graph.drawplot(cables, colors, comments)
             #self.linfunction.divideonlines()
             #data = [line.calc(100) for line in self.linfunction.lines]
             #self.graph.addknot(data)
-            self.graph.plotter.show()
+            self.graph.plotter.show(auto_close=True)
+    
+    def closeEvent(self, event):
+        self.graph.close()
+        event.accept() 

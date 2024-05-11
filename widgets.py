@@ -21,9 +21,9 @@ class FunctionWidget(QWidget):
         self.__input_slopecoef__ = QLineEdit(self)
         self.__input_freecoef__ = QLineEdit(self)
 
-        valid = QRegularExpressionValidator(QRegularExpression("[1-9][0-9]*+/+[1-9][0-9]*"))
+        valid = QRegularExpressionValidator(QRegularExpression("(-|0|)[1-9][0-9]*+/+[1-9][0-9]*"))
         self.__input_slopecoef__.setValidator(valid)
-        valid = QRegularExpressionValidator(QRegularExpression("[1-9][0-9]*+/+[1-9][0-9]*"))
+        valid = QRegularExpressionValidator(QRegularExpression("(-|0|)[1-9][0-9]*+/+[1-9][0-9]*"))
         self.__input_freecoef__.setValidator(valid)
         self.__input_slopecoef__.setFont(QFont('Arial', 15))
         self.__input_freecoef__.setFont(QFont('Arial', 15))

@@ -4,20 +4,15 @@ from PyQt6.QtWidgets import QApplication, QWidget, QMainWindow
 import sys
 from mainwindow import MainWindow
 
-#plotter.show()
-# tm = pv.Plotter()
-# tm.show_grid()
-# tm.show()
- # Только для доступа к аргументам командной строки
+# Только для доступа к аргументам командной строки
 # Приложению нужен один (и только один) экземпляр QApplication.
 # Передаём sys.argv, чтобы разрешить аргументы командной строки для приложения.
 # Если не будете использовать аргументы командной строки, QApplication([]) тоже работает
 app = QApplication(sys.argv)
-#tg = TorusGraphic()
-#tg.drawtorus(BackgroundPlotter(app=app))
-#tg.plotter.show()
+
 # Создаём виджет Qt — окно.
 window = MainWindow()
+#app.quit = window.graph.close
 
 # from pyvistaqt import BackgroundPlotter
 # plotter = BackgroundPlotter(toolbar=False, menu_bar=False)
@@ -29,10 +24,10 @@ window = MainWindow()
 # window.setCentralWidget()
 window.show()
 # window.surface.plotter.show()
-app.exec()
+sys.exit(app.exec())
 
 
-# # Запускаем цикл событий.
+# Запускаем цикл событий.
 # from math import ceil
 # import numpy as np
 # import matplotlib as mpl
@@ -72,7 +67,7 @@ app.exec()
 #   step = 1
 #   if slopecoef_2adic < 0:
 #     step = -1
-#   x_prev = ceil(x_prev) if x_prev % 1 != 0 else x_prev + 1
+#   x_prev = round(x_prev) if x_prev % 1 != 0 else x_prev + step
 #   y_prev += 1
 #   print("---", x_prev, y_prev)
 #   y_tmp = set()
@@ -80,11 +75,12 @@ app.exec()
 #     tmp = t+x_prev
 #     y_st = freecoef_2adic + slopecoef_2adic*(tmp)
 #     print(t, 'y', tmp, y_st)
-#     if y_st % 1 == 0:
-#       y_tmp.add(y_st)
+#     if round(y_st , 5) % 1 == 0:
+#       y_tmp.add(int(round(y_st , 5)))
 #     points.append((round(tmp, 5), round(y_st , 5)))
-#   limit = abs(frac.numerator)
-#   for t in range(0, limit): 
+#   limit = abs(frac.numerator) - 1
+#   print(y_prev)
+#   for t in range(0, step*limit, step): 
 #     if t+y_prev not in y_tmp:
 #       tmp = t+y_prev
 #       x_st = (tmp - freecoef_2adic)/slopecoef_2adic
@@ -92,28 +88,36 @@ app.exec()
 #       points.append((round(x_st, 5), round(tmp, 5)))
 #     else:
 #       limit+=1
+#       print('----')
 #   # print(points)
 #   # plt.grid(True)
-
-#   points = sorted(points, key=lambda vec: ((vec[0] - points[0][0])**2 + (vec[1] - points[0][1])**2)**0.5, reverse=frac.numerator<0)
+#   print(points)
+#   print(frac.numerator<0)
+#   start = max(points, key=lambda vec: (vec[0]**2 + vec[1]**2)**0.5)
+#   print(start)
+#   points = sorted(points, key=lambda vec: ((vec[0] - start[0])**2 + (vec[1] - start[1])**2)**0.5)[::-1]
+#   #if step > 0: points = points[::-1]
+#   print(list(map(lambda vec: ((vec[0] - start[0])**2 + (vec[1] - start[1])**2)**0.5, points)))
 #   print(np.array(points))
 #   x = []
 #   y =[]
 #   # plt.grid(True)
-#   # plt.scatter([i[0] for i in points], [i[1] for i in points],  s = 2)
+#   # plt.scatter([i[0] for i in points], [i[1] for i in points],  s = 3)
 #   # plt.show()
 #   mod1 = lambda val: val%1 if val%1 != 0 else 1
+#   lines = []
 #   for i in range(1, len(points)):
 #     if points[i][1] < points[i-1][1]:
-#       start_y = mod1(points[i-1][1])
-#       end_y = points[i][1]%1
+#         start_y = mod1(points[i-1][1])
+#         end_y = points[i][1]%1
+#         print('--', end=' ')
 #     else:
-#       end_y = mod1(points[i][1])
-#       start_y = points[i-1][1]%1
+#         end_y = mod1(points[i][1])
+#         start_y = points[i-1][1]%1
 #     start_x = points[i-1][0]%1
 #     end_x = mod1(points[i][0])
-#     print(i, ":", start_x, start_y, end_x, end_y)
 #     lines.append(Line(start_x, start_y, end_x, end_y))
+#     print(i, ":", start_x, start_y, end_x, end_y)
 #     tx, ty = lines[i-1].calc(10)
 #     plt.plot(tx, ty, color = color)
 #   x = np.array(x)
@@ -122,8 +126,9 @@ app.exec()
 #   x, y = lines[0].calc(10)
 # # freecoef_2adic = float(Fraction('2/3'))
 # # frac = Fraction('3/5')
-# func("green", float(Fraction('2/3')), Fraction('2'))
-# func("blue", float(Fraction('1/3')), Fraction('2'))
+# func("blue", float(Fraction('1/5')), Fraction('3/5'))
+# func("red", float(Fraction('1/11')), Fraction('7'))
+# #func("green", float(Fraction('2/3')), Fraction('-2'))
 # plt.legend()
 # plt.grid(True)
 # plt.show()
