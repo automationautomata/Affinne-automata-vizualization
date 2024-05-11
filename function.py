@@ -167,7 +167,8 @@ class LiniarFunction:
                     limit+=1
             start = (0, 0)
             dist = lambda vec: ((vec[0] - start[0])**2 + (vec[1] - start[1])**2)**0.5
-            tmp =  max(points, key=dist)
+            tmp = max(points, key=dist)
+            start = tmp
             sort_func = lambda vec: ((vec[0] - points[0][0])**2 + (vec[1] - points[0][1])**2)**0.5
             points = sorted(points, key=dist)
             #print(freecoef_rat, ': ',np.array(points))

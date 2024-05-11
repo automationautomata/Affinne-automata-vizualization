@@ -33,7 +33,7 @@
 # # window.surface.plotter.show()
 # sys.exit(app.exec())
 # Запускаем цикл событий.
-from math import ceil
+from math import floor
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -73,24 +73,24 @@ def func(color, freecoef_2adic, frac):
   if slopecoef_2adic < 0:
     step = -1
   x_prev = round(x_prev) if x_prev % 1 != 0 else x_prev + step
-  y_prev += 1
+  y_prev = round(y_prev) if y_prev % 1 != 0 else y_prev + 1
   print("---", x_prev, y_prev)
   y_tmp = set()
   for t in range(0, frac.denominator*step, step):
     tmp = t+x_prev
     y_st = freecoef_2adic + slopecoef_2adic*(tmp)
     print(t, 'y', tmp, y_st)
-    if round(y_st , 5) % 1 == 0:
-      y_tmp.add(int(round(y_st , 5)))
-    points.append((round(tmp, 5), round(y_st , 5)))
-  limit = abs(frac.numerator)
-  print(y_prev)
-  for t in range(0, step*limit, step): 
+    if round(y_st , 6) % 1 == 0:
+      y_tmp.add(int(round(y_st , 6)))
+    points.append((round(tmp, 6), round(y_st , 6)))
+  limit = abs(frac.numerator)# + (1 if points[0][0]%1!=0 else 0)
+  print(points)
+  for t in range(0, limit): 
     if t+y_prev not in y_tmp:
       tmp = t+y_prev
       x_st = (tmp - freecoef_2adic)/slopecoef_2adic
-      print(t, 'x', round(x_st, 5), round(tmp, 5))
-      points.append((round(x_st, 5), round(tmp, 5)))
+      print(t, 'x', round(x_st, 6), round(tmp, 6))
+      points.append((round(x_st, 6), round(tmp, 6)))
     else:
       limit+=1
       print('----')
@@ -100,37 +100,44 @@ def func(color, freecoef_2adic, frac):
   print(frac.numerator<0)
   start = max(points, key=lambda vec: (vec[0]**2 + vec[1]**2)**0.5)
   print(start)
-  points = sorted(points, key=lambda vec: ((vec[0] - start[0])**2 + (vec[1] - start[1])**2)**0.5)[::-1]
+  points = sorted(points, key=lambda vec: ((vec[0] - start[0])**2 + (vec[1] - start[1])**2)**0.5, reverse=step>0)
   print(list(map(lambda vec: ((vec[0] - start[0])**2 + (vec[1] - start[1])**2)**0.5, points)))
   print(np.array(points))
   x = []
   y =[]
-  # plt.grid(True)
-  # plt.scatter([i[0] for i in points], [i[1] for i in points],  s = 3)
-  # plt.show()
+  plt.grid(True)
+  plt.scatter([i[0] for i in points], [i[1] for i in points],  s = 3)
+  plt.show()
   mod1 = lambda val: val%1 if val%1 != 0 else 1
   lines = []
   for i in range(1, len(points)):
-    if step < 0:
+    if points[i-1][1] > points[i][1]:
         start_y = mod1(points[i-1][1])
         end_y = points[i][1]%1
+        print('-', end='')
     else:
         end_y = mod1(points[i][1])
         start_y = points[i-1][1]%1
+        print('--', end='')
     start_x = points[i-1][0]%1
     end_x = mod1(points[i][0])
     lines.append(Line(start_x, start_y, end_x, end_y))
     print(i, ":", start_x, start_y, end_x, end_y)
     tx, ty = lines[i-1].calc(10)
-    plt.plot(tx, ty, color = color)
+    plt.plot(tx, ty, color = [ np.round(np.random.rand(),1),
+                            np.round(np.random.rand(),1),
+                            np.round(np.random.rand(),1)], label=f'{i}')
   x = np.array(x)
   y = np.array(y)
   data = [line.calc(50) for line in lines]
   x, y = lines[0].calc(10)
 # freecoef_2adic = float(Fraction('2/3'))
 # frac = Fraction('3/5')
-func("blue", float(Fraction('1/3')), Fraction('-2'))
-#func("green", float(Fraction('-2/3')), Fraction('-1/11'))
+func("blue", float(Fraction('-1/11')), Fraction('-7'))
+plt.legend()
+plt.grid(True)
+plt.show()
+func("green", float(Fraction('1/3')), Fraction('2'))
 plt.legend()
 plt.grid(True)
 plt.show()
