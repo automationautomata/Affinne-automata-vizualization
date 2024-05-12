@@ -33,7 +33,7 @@
 # # window.surface.plotter.show()
 # sys.exit(app.exec())
 # Запускаем цикл событий.
-from math import floor
+from math import ceil
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -65,15 +65,26 @@ def func(color, freecoef_2adic, frac):
   j = 0
   x = []
   y = []
-  x_prev = -freecoef_2adic/slopecoef_2adic
-  y_prev = 0
+  x_prev, y_prev = 0, 0
+  if freecoef_2adic < slopecoef_2adic:
+    y_prev = -frac.denominator
+    x_prev = (y_prev - freecoef_2adic)/slopecoef_2adic
+  else:
+    y_prev = 0
+    x_prev = -freecoef_2adic/slopecoef_2adic
+    # if abs(frac.numerator) >= abs(frac.denominator):
+    #   y_prev = -frac.denominator
+    #   x_prev = (y_prev - freecoef_2adic)/slopecoef_2adic
+    # else:
+    #   y_prev = frac.numerator
+    #   x_prev = (y_prev - freecoef_2adic)/slopecoef_2adic
   points = [(x_prev, y_prev)]
   print("---", x_prev, y_prev)
   step = 1
   if slopecoef_2adic < 0:
     step = -1
   x_prev = round(x_prev) if x_prev % 1 != 0 else x_prev + step
-  y_prev = round(y_prev) if y_prev % 1 != 0 else y_prev + 1
+  y_prev += 1
   print("---", x_prev, y_prev)
   y_tmp = set()
   for t in range(0, frac.denominator*step, step):
@@ -85,6 +96,9 @@ def func(color, freecoef_2adic, frac):
     points.append((round(tmp, 6), round(y_st , 6)))
   limit = abs(frac.numerator)# + (1 if points[0][0]%1!=0 else 0)
   print(points)
+  plt.grid(True)
+  plt.scatter([i[0] for i in points], [i[1] for i in points],  s = 3)
+  plt.show()
   for t in range(0, limit): 
     if t+y_prev not in y_tmp:
       tmp = t+y_prev
@@ -133,11 +147,23 @@ def func(color, freecoef_2adic, frac):
   x, y = lines[0].calc(10)
 # freecoef_2adic = float(Fraction('2/3'))
 # frac = Fraction('3/5')
-func("blue", float(Fraction('-1/11')), Fraction('-7'))
+func("green", float(Fraction('0')), Fraction('-5/3'))
 plt.legend()
 plt.grid(True)
 plt.show()
-func("green", float(Fraction('1/3')), Fraction('2'))
+func("blue", float(Fraction('17/11')), Fraction('-7'))
+plt.legend()
+plt.grid(True)
+plt.show()
+func("green", float(Fraction('-7/3')), Fraction('-2'))
+plt.legend()
+plt.grid(True)
+plt.show()
+func("green", float(Fraction('7/3')), Fraction('-2'))
+plt.legend()
+plt.grid(True)
+plt.show()
+func("green", float(Fraction('7/3')), Fraction('2'))
 plt.legend()
 plt.grid(True)
 plt.show()
