@@ -1,37 +1,17 @@
-import pyvista as pv
-from pyvistaqt import BackgroundPlotter, QtInteractor
-from PyQt6.QtWidgets import QApplication, QWidget, QMainWindow
-import sys
+from PyQt6.QtWidgets import QApplication
 from mainwindow import MainWindow
+from sys import exit, argv
 
-#plotter.show()
-# tm = pv.Plotter()
-# tm.show_grid()
-# tm.show()
- # Только для доступа к аргументам командной строки
+# Только для доступа к аргументам командной строки
 # Приложению нужен один (и только один) экземпляр QApplication.
 # Передаём sys.argv, чтобы разрешить аргументы командной строки для приложения.
 # Если не будете использовать аргументы командной строки, QApplication([]) тоже работает
-app = QApplication(sys.argv)
+app = QApplication(argv)
 
-#tg = TorusGraphic()
-#tg.drawtorus(BackgroundPlotter(app=app))
-#tg.plotter.show()
 # Создаём виджет Qt — окно.
 window = MainWindow()
-#app.quit = window.graph.close
-
-# from pyvistaqt import BackgroundPlotter
-# plotter = BackgroundPlotter(toolbar=False, menu_bar=False)
-# plotter.interactor = window
-# _ = plotter.add_mesh(s)
-# #window.resize(600, 400)
-# plotter.enable_point_picking(callback=callback, show_message=True, use_mesh=True, 
-#                                     show_point=True, point_size=10, left_clicking=True)
-# window.setCentralWidget()
 window.show()
-# window.surface.plotter.show()
-sys.exit(app.exec())
+exit(app.exec())
 
 # # Запускаем цикл событий.
 # from math import ceil
@@ -67,12 +47,12 @@ sys.exit(app.exec())
 #   x = []
 #   y = []
 #   x_prev, y_prev = 0, 0
-#   if freecoef_2adic < slopecoef_2adic:
-#     y_prev = -frac.denominator
-#     x_prev = (y_prev - freecoef_2adic)/slopecoef_2adic
-#   else:
-#     y_prev = 0
-#     x_prev = -freecoef_2adic/slopecoef_2adic
+# #   if freecoef_2adic < slopecoef_2adic:
+# #     y_prev = -frac.denominator
+# #     x_prev = (y_prev - freecoef_2adic)/slopecoef_2adic
+# #   else:
+#   y_prev = 0
+#   x_prev = -freecoef_2adic/slopecoef_2adic
 #     # if abs(frac.numerator) >= abs(frac.denominator):
 #     #   y_prev = -frac.denominator
 #     #   x_prev = (y_prev - freecoef_2adic)/slopecoef_2adic
@@ -88,46 +68,76 @@ sys.exit(app.exec())
 #   if slopecoef_2adic < 0:
 #     step = -1
 #     step_y = -1
-#   x_prev = round(x_prev) + step
+#   if (abs(frac.numerator) + frac.denominator)%2 == 1:
+#     x_prev = round(x_prev) + step
+#   else: x_prev = round(x_prev)
 #   y_prev += 1
 #   print("---", x_prev, y_prev)
 #   y_tmp = set()
-#   ys = {0}
+#   ys = set()
 #   t = 0
-#   while len(ys) < frac.denominator:
-#     tmp = t+x_prev
-#     y_st = freecoef_2adic + slopecoef_2adic*(tmp)
-#     if round(y_st, 6)%1 not in ys: 
-#       #print(t, 'y', tmp, y_st)
-#       ys.add(round(y_st, 6)%1)
-#       if round(y_st , 6) % 1 == 0:
-#         y_tmp.add(int(round(y_st , 6))%1)
-#       points.append((round(tmp, 6), round(y_st , 6)))
-#     else: 
-#        step_y = step_y*-1
-#        x_prev = round(points[0][0]) + step
-#        t = 0
-#     t += step_y
-
-#   limit = abs(frac.numerator) + (1 if points[0][1]%1==0 else 0)
+ 
+#   limit = abs(frac.numerator)
 #   print(points)
-#   plt.grid(True)
-#   plt.scatter([i[0] for i in points], [i[1] for i in points],  s = 3)
-#   plt.show()
-#   xs = {points[0][0]%1}
-#   t = 0
-#   while len(xs) < limit:
-#     tmp = t+y_prev
-#     x_st = (tmp - freecoef_2adic)/slopecoef_2adic 
-#     if round(x_st, 6)%1 not in xs:
-#       xs.add(round(x_st, 6)%1)
-#       print(t, 'x', round(x_st, 6), round(tmp, 6))
-#       points.append((round(x_st, 6), round(tmp, 6)))
-#     else:
-#        step_y = -1
-#        y_prev = round(points[0][1])
-#        t = 0
-#     t += step_y
+# #   plt.grid(True)
+# #   plt.scatter([i[0] for i in points], [i[1] for i in points],  s = 3)
+# #   plt.show()
+#   compare = lambda a, b : round(a[0], 5)%1 == round(b[0], 5)%1 \
+#                           and round(a[1], 5)%1 == round(b[1], 5)%1
+#   dist = lambda a, b: ((a[0] - b[0])**2 + (a[1] - b[1])**2)**0.5
+#   vecround = lambda a, pres: (round(a[0], pres), round(a[1], pres))
+#   st_x = 0
+#   st_y = 0
+#   cur_dist = 0
+#   start_x, start_y = vecround(points[0], 5)
+#   cur_x = vecround((start_x + st_x, 
+#                     freecoef_2adic + slopecoef_2adic*(start_x + st_x)), 5)
+#   cur_y = vecround(((start_y + st_y - freecoef_2adic)/slopecoef_2adic, 
+#                     start_y + st_y), 5)
+#   if dist(cur_x, prev) < dist(cur_y, prev):
+#     prev = cur_x
+#     st_x += 1
+#   else: 
+#     prev = cur_y
+#     st_y += 1
+#   points.append(prev)
+#   while not compare(points[0], prev):
+#       cur_x = vecround((start_x + st_x, 
+#                        freecoef_2adic + slopecoef_2adic*(start_x + st_x)), 5)
+#       cur_y = vecround(((start_y + st_y - freecoef_2adic)/slopecoef_2adic, 
+#                        start_y + st_y), 5)
+#       if dist(cur_x, prev) < dist(cur_y, prev):
+#         prev = cur_x
+#         st_x += 1
+#       else: 
+#          prev = cur_y
+#          st_y += 1
+#       points.append(prev)
+
+      
+# #   for t in range(0, frac.denominator*step, step):
+# #         cur_x = t+x_prev
+# #         cur_y = freecoef_2adic + slopecoef_2adic*(cur_x)
+# #         if cur_y % 1 == 0:
+# #             y_tmp.add(cur_y)
+# #         print('y', t, round(cur_x, 5), round(cur_y , 5))
+# #         points.append((round(cur_x, 5), round(cur_y , 5)))
+# #   xs = {round(points[0][0]%1, 5)}
+# #   limit = abs(frac.numerator) + (1 if round(points[0][0]%1, 5) == 0 else 0)
+# #   for t in range(0, limit): 
+# #         cur_y = t+y_prev
+# #         cur_x = (cur_y - freecoef_2adic)/slopecoef_2adic
+# #         if t+y_prev not in y_tmp and round(cur_x, 5)%1!=round(points[0][0]%1, 5):
+# #             print('x', t, round(cur_x, 5), round(cur_y , 5))
+# #             points.append((round(cur_x, 5), round(cur_y, 5)))
+# #         else:
+# #             print('x', t, round(cur_x, 5), round(cur_y , 5))
+# #             points.append((round(cur_x, 5), round(cur_y, 5)))
+# #             break
+#              #limit+=1
+# #   plt.grid(True)
+# #   plt.scatter([i[0] for i in points], [i[1] for i in points],  s = 3)
+# #   plt.show()
 #   # print(points)
 #   # plt.grid(True)
 #   print(points)
@@ -139,9 +149,9 @@ sys.exit(app.exec())
 #   print(np.array(points))
 #   x = []
 #   y = []
-#   plt.grid(True)
-#   plt.scatter([i[0] for i in points], [i[1] for i in points],  s = 3)
-#   plt.show()
+# #   plt.grid(True)
+# #   plt.scatter([i[0] for i in points], [i[1] for i in points],  s = 3)
+# #   plt.show()
 #   mod1 = lambda val: val%1 if val%1 != 0 else 1
 #   lines = []
 #   for i in range(1, len(points)):
@@ -167,11 +177,11 @@ sys.exit(app.exec())
 #   x, y = lines[0].calc(10)
 # freecoef_2adic = float(Fraction('2/3'))
 # frac = Fraction('3/5')
-# func("green", float(Fraction('0')), Fraction('5/3'))
-# plt.legend()
-# plt.grid(True)
-# plt.show()
-# func("blue", float(Fraction('17/11')), Fraction('7'))
+# # func("green", float(Fraction('0')), Fraction('5/3'))
+# # plt.legend()
+# # plt.grid(True)
+# # plt.show()
+# func("blue", float(Fraction('-17/11')), Fraction('7'))
 # plt.legend()
 # plt.grid(True)
 # plt.show()
@@ -180,10 +190,10 @@ sys.exit(app.exec())
 # plt.grid(True)
 # plt.show()
 # func("green", float(Fraction('7/3')), Fraction('2'))
-# # plt.legend()
-# # plt.grid(True)
-# # plt.show()
-# func("green", float(Fraction('0')), Fraction('2'))
+# plt.legend()
+# plt.grid(True)
+# plt.show()
+# func("green", float(Fraction('-4/7')), Fraction('1/7'))
 # plt.legend()
 # plt.grid(True)
 # plt.show()
