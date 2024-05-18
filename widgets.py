@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, QMessageBox
+from PyQt6.QtWidgets import QWidget, QLabel, QLineEdit, QGridLayout, QScrollArea, QPushButton
 from PyQt6.QtGui import QFont, QRegularExpressionValidator
 from PyQt6.QtCore import QRegularExpression, Qt
 
@@ -6,7 +6,7 @@ class FunctionWidget(QWidget):
     small= {'0':'₀', '1':'₁', '2':'₂', '3':'₃', '4':'₄', '5':'₅', '6':'₆', '7':'₇', '8':'₈', '9':'₉'}
     def __init__(self, parent=None, index=0):
         super(FunctionWidget, self).__init__(parent)
-        
+
         self.__label_func__ = QLabel(self)
         self.__label_arg__ = QLabel(self)
         self.__function_info__ = QLabel(self)
@@ -14,7 +14,7 @@ class FunctionWidget(QWidget):
         self.__label_func__.setFont(QFont('Arial', 15)) 
         self.__label_arg__.setFont(QFont('Arial', 15)) 
         self.__function_info__.setFont(QFont('Arial', 10))
-        self.__function_info__.setTextInteractionFlags(Qt.TextSelectableByMouse)
+        self.__function_info__.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
 
         smallindex = ''.join([self.small[s] for s in str(index)])
         self.__label_func__.setText(f"f{smallindex}(x) = ")
@@ -58,4 +58,49 @@ class FunctionWidget(QWidget):
     def set_functioninfo(self, info):
         self.__function_info__.setText(info)
 
-#FunctionWidget
+class WidgetsContainer(QWidget):
+    def __init__(self, width, height, pos_x, pos_y, *args, initfunc, parent=None):
+        super(WidgetsContainer, self).__init__(parent)
+        self.setParent(parent)
+        self.move(pos_x, pos_y)
+        self.Widgets = []
+        self.container = QWidget(self)
+        self.__scroll__ = QScrollArea(self)
+        self.__scroll__.resize(width, height)
+        self.__scroll__.setWidget(self.container)
+        self.__scroll__.setParent(self)
+        self.__scroll__.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
+        self.__scroll__.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
+        
+        self.container.resize(width + self.__scroll__.verticalScrollBar().width(), height)
+        self.resize(width + self.__scroll__.verticalScrollBar().width(), height)
+
+        self.iteminitfunc = initfunc
+        self.itemargs = args
+
+    def showwidget(self):
+        self.container.show()
+        self.__scroll__.show()
+        self.show()
+    
+    def setItemInit(self, initfunc):
+        self.iteminitfunc = initfunc
+    
+    def setItemArgs(self, *args):
+        self.itemargs = args
+    
+    def addItem(self):
+        if self.iteminitfunc: 
+            item = self.iteminitfunc(*self.itemargs)
+            item.setParent(self.container)
+            if len(self.Widgets) % 4 == 1:
+                self.container.resize(self.width(), self.height() + self.Widgets[-1].height())
+
+            if len(self.Widgets) != 0:
+                item.move(0, self.Widgets[-1].y()+self.Widgets[-1].height())
+            else: item.move(0, 0)        
+            self.Widgets.append(item)
+            item.show()
+            
+
+
