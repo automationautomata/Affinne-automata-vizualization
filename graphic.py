@@ -24,7 +24,7 @@ class Graph:
         if vec[2] < 0:
             a_x = 360 - a_x    
         return a_x/360, a_y/360
-    
+
     def __callback(self, mesh, pid):
         if self.lp:
             self.plotter.remove_actor(lp)
@@ -42,8 +42,9 @@ class Graph:
                 a*np.sin(x)
     
     # Create and plot structured grid
-    def drawtorus(self, plotter, precision):
-        self.plotter = plotter
+    def drawtorus(self, precision, plotter=None):
+        if plotter:
+            self.plotter = plotter
         self.lp = None 
 
         u=np.linspace(-np.pi,np.pi,precision)
@@ -64,14 +65,20 @@ class Graph:
         # self.plotter.enable_point_picking(callback=self.__callback, show_message=True, use_mesh=True, 
         #                             show_point=True, point_size=10, left_clicking=True)
         self.plotter.show_grid()
+
+    def setplotsnum(self, number):
+        figure, axes = plt.subplots(ncols=number//5 + 1, nrows=number - number//5, squeeze=False) 
+        self.plots_generator = axes.flat
+
     def generatecolors(self, number):
         colors = []
-        for i in range(number):
+        for _ in range(number):
             colors.append([ np.round(np.random.rand(),1),
                             np.round(np.random.rand(),1),
                             np.round(np.random.rand(),1), 
                             np.round(np.clip(np.random.rand(), 0, 1), 1) ])
         return colors
+        
     def drawcable(self, cable, color):
         for t in range(len(cable)):
             # array = data[t]
@@ -95,16 +102,18 @@ class Graph:
             self.drawcable(cables[i], colors[i])
         #self.plotter.show() 
 
-    def drawplot(self, cables, colors, comments):
+    def drawlineplot(self, cables, colors, comments, funclabel):
         legend = []
-        for i in range(len(cables)):
-            for line in cables[i]:
-                plt.plot(line[0], line[1], color=colors[i][:3])
-            legend.append(Line2D([0], [0], color=colors[i][:3], lw=4, label=comments[i]))
+        cur_plot = next(self.plots_generator)
+        for (cable, color, comment) in zip(cables, colors, comments):
+            for line in cable:
+                cur_plot.plot(line[0][0::len(line)-1], 
+                              line[1][0::len(line)-1], color=color[:3])
+            legend.append(Line2D([0], [0], color=color[:3], lw=4, label=comment))
         #_, ax = plt.subplots()
-        plt.legend(handles=legend, loc='upper right', framealpha=0.2)
-        plt.grid(True)
-        plt.show(block=False)
+        # ax[plot_pos].title(funclabel) 
+        cur_plot.legend(handles=legend, loc='upper right', framealpha=0.2)
+        cur_plot.grid(True)
     
     def close(self):
         plt.close('all')

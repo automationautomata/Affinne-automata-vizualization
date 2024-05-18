@@ -106,7 +106,7 @@ class MainWindow(QMainWindow):
         plt.close('all')    
     
     def addfunction(self):
-        print(self.dumpObjectTree())
+        #print(self.dumpObjectTree())
         self.container.addItem()
         # layoutWidget = self.__scroll__.widget()
 
@@ -121,57 +121,55 @@ class MainWindow(QMainWindow):
         # widget.setposition(0, 10)
         # widget.setFixedSize(last.size())
 
-
+    def __showError__(self, msg):
+            self.__msgBox__.setText(msg)
+            self.__msgBox__.exec()
     def drawclick(self):
-        layoutWidget = self.__scroll__.widget()
-        num = layoutWidget.layout().count()
-        for i in range(num):
-            functionWidget = layoutWidget.layout().itemAt(i).widget()
-            a, b = functionWidget.getinput()
+        if self.__input_points_num__.text() != '':
             precision = int(self.__input_points_num__.text())
-            if self.__input_points_num__.text() == '':
-                self.__msgBox__.setText("Error: enter precision")
-                self.__msgBox__.exec()
-            elif precision < 10:
-                self.__msgBox__.setText("Error: small precision")
-                self.__msgBox__.exec()
-            elif '/' in b and int(b[-1]) % 2 == 0:
-                self.__msgBox__.setText("Error: slope coefficient isn't correct")
-                self.__msgBox__.exec()
+            if precision < 10:
+                self.__showError__("Error: small precision")
+                return
+        else:
+            self.__showError__("Error: enter precision")
+            return
+        self.graph.close()
+        self.graph.plotter = Plotter(line_smoothing=True, polygon_smoothing=True)
+        self.graph.drawtorus(precision)
+        self.graph.setplotsnum(len(self.container.Widgets))
+        for functionWidget in self.container.Widgets:
+            a, b = functionWidget.getinput()
+            if '/' in b and int(b[-1]) % 2 == 0:
+                self.__showError__("Error: slope coefficient isn't correct")
             elif '/' in a and int(a[-1]) % 2 == 0:
-                self.__msgBox__.setText("Error: free coefficient isn't correct")
-                self.__msgBox__.exec()
+                self.__showError__("Error: free coefficient isn't correct")
             else:
-                self.graph.close()
-                if not self.graph.plotter:
-                    self.graph.plotter = plotter = Plotter(line_smoothing=True, polygon_smoothing=True)
-                self.draw(functionWidget, precision, plotter)
+                self.draw(functionWidget, precision)#plotter)
+        plt.show(block=False)
+        self.graph.plotter.show()#auto_close=True)
+
+
                 
 
     def draw(self, functionWidget, precision):
         a, b = functionWidget.getinput()
-        if a == '' or b == '':
-            if a == '': a = '0' 
-            if b == '': b = '0'
+        if a == '': a = '0' 
+        if b == '': b = '0'
         linfunction = LiniarFunction(b, a, precision)
         functionWidget.set_functioninfo(linfunction.info())
         
-        self.graph.drawtorus(self.graph.plotter, precision)
-        colors = self.graph.generatecolor(self.linfunction.cablenum())
+        #self.graph.drawtorus(precision)
+        colors = self.graph.generatecolors(linfunction.cablenum())
         cables = linfunction.divideoncables()
-        self.graph.drawcables(linfunction.divideoncables(), colors)
+        self.graph.drawcables(cables, colors)
 
         comments = []
         for i in range(len(colors)):
-            comment = r'$\dfrac{' + str(linfunction.freecoefs[i].numerator) + r'}' + \
+            comment = r'$\dfrac{' + str(linfunction.freecoefs[i].numerator)   + r'}' + \
                              r'{' + str(linfunction.freecoefs[i].denominator) + r'}$'
             comments.append(comment)
-        self.graph.drawplot(cables, colors, comments)
-        #self.linfunction.divideonlines()
-        #data = [line.calc(100) for line in self.linfunction.lines]
-        #self.graph.addknot(data)
-        self.graph.plotter.show(auto_close=True)
-    
-    # def closeEvent(self, event):
-    #     self.graph.close()
-    #     event.accept() 
+        self.graph.drawlineplot(cables, colors, comments, "")
+         
+    def close(self):
+        self.graph.close()
+        return super().close()

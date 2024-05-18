@@ -3,7 +3,7 @@ from PyQt6.QtGui import QFont, QRegularExpressionValidator
 from PyQt6.QtCore import QRegularExpression, Qt
 
 class FunctionWidget(QWidget):
-    small= {'0':'₀', '1':'₁', '2':'₂', '3':'₃', '4':'₄', '5':'₅', '6':'₆', '7':'₇', '8':'₈', '9':'₉'}
+    small = {'0':'₀', '1':'₁', '2':'₂', '3':'₃', '4':'₄', '5':'₅', '6':'₆', '7':'₇', '8':'₈', '9':'₉'}
     def __init__(self, parent=None, index=0):
         super(FunctionWidget, self).__init__(parent)
 
@@ -37,7 +37,7 @@ class FunctionWidget(QWidget):
     
     def setposition(self, start_x, start_y):
         step_input = self.__input_slopecoef__.width()
-        self.__function_info__.move(start_x, 20 + start_y + 2*self.__input_slopecoef__.height())
+        self.__function_info__.move(start_x, start_y + self.__input_slopecoef__.height())
         self.__label_func__.move(start_x, start_y)
         start_x += self.__label_func__.width()
         self.__input_slopecoef__.move(start_x, start_y)
@@ -71,7 +71,7 @@ class WidgetsContainer(QWidget):
         self.__scroll__.setParent(self)
         self.__scroll__.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
         self.__scroll__.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
-        
+
         self.container.resize(width + self.__scroll__.verticalScrollBar().width(), height)
         self.resize(width + self.__scroll__.verticalScrollBar().width(), height)
 
