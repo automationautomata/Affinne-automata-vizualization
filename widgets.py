@@ -19,7 +19,7 @@ class FunctionWidget(QWidget):
         smallindex = ''.join([self.small[s] for s in str(index)])
         self.__label_func__.setText(f"f{smallindex}(x) = ")
         self.__label_arg__.setText("x  +")
-
+    
         self.__input_slopecoef__ = QLineEdit(self)
         self.__input_freecoef__ = QLineEdit(self)
 
@@ -31,8 +31,9 @@ class FunctionWidget(QWidget):
         self.__input_freecoef__.setFont(QFont('Arial', 15))
 
     def getinput(self):
-        return self.__input_freecoef__.text(), self.__input_slopecoef__.text()
-    def getindex(self):
+        return self.__input_slopecoef__.text(), self.__input_freecoef__.text()
+    
+    def getname(self):
         return self.__label_func__.text()
     
     def setposition(self, start_x, start_y):

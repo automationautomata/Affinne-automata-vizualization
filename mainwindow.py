@@ -1,13 +1,14 @@
-from PyQt6.QtWidgets import QLabel, QMainWindow, QVBoxLayout, QWidget, \
-                            QLineEdit, QPushButton, QMessageBox, QScrollArea, QGridLayout, QSpacerItem, QSizePolicy
+from PyQt6.QtWidgets import QLabel, QMainWindow, QLineEdit, \
+                            QPushButton, QMessageBox
 from PyQt6.QtGui import QFont, QRegularExpressionValidator
-from PyQt6.QtCore import QRegularExpression, Qt
+from PyQt6.QtCore import QRegularExpression
 from matplotlib import pyplot as plt
 from graphic import Graph
 from widgets import FunctionWidget, WidgetsContainer
 from function import LiniarFunction
 from pyvista import Plotter
 from sys import maxsize
+
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -34,7 +35,6 @@ class MainWindow(QMainWindow):
         self.__input_points_num__.setValidator(valid)
 
         def __initfunctionWidget__(*args):
-            #width, height, std_height, label_width, input_width = args
             functionWidget = FunctionWidget(index=next(args[0]))
             functionWidget.setFixedSize(args[1]-20, args[2]) 
             functionWidget.setsize(args[3], args[4], args[5])
@@ -50,33 +50,6 @@ class MainWindow(QMainWindow):
         self.container.addItem()
         self.container.setParent(self)
         
-        #functionWidget = FunctionWidget()
-        #self.functionWidgets = [functionWidget]
-        # functionWidget.setFixedSize(scroll_width-20, func_height) 
-        # functionWidget.move(0, 0) 
-        # functionWidget.setsize(std_height, label_width, input_width)
-        # functionWidget.setposition(0, 10)
-        # functionWidget.show()
-        # WidgetsContainer()
-        # self.__scroll__ = QScrollArea(self)
-        # self.__scroll__.move(0, std_height)
-        # self.__scroll__.resize(scroll_width + 20, size_height-std_height)
-        # container.resize(scroll_width, size_height-std_height)
-        # #layout.addWidget(functionWidget)
-        # #container.setLayout(layout)
-        # self.__scroll__.setWidget(container)
-        # container.show()
-        # # layout.setVerticalSpacing(1)
-        # layout.addStretch(12)
-        # layout.addSpacing(50)
-        # layout.setContentsMargins(0, 0, 0, 0)
-        # # Create a horizontal spacer item
-        # spacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding , QSizePolicy.Policy.Fixed)
-
-        # # Add the spacer item to the layout
-        # layout.addItem(spacer)
-
-        
         self.__drawbutton__ = QPushButton(self)
         self.__drawbutton__.setFont(QFont('Arial', 12))
         self.__drawbutton__.setText("Draw")
@@ -90,15 +63,6 @@ class MainWindow(QMainWindow):
         self.__addbutton__.move(scroll_width + 20, 
                                 self.__drawbutton__.height()*2 + 12)
 
-
-        # for i in range(10):
-        #     for j in range(5):
-        #         button = QPushButton(f'{i}x{j}')
-        #         layout.addWidget(button, i, j)
-
-
-
-        
     def onquit(self):
         if self.graph.plotter:
             self.graph.plotter.deep_clean()
@@ -106,24 +70,12 @@ class MainWindow(QMainWindow):
         plt.close('all')    
     
     def addfunction(self):
-        #print(self.dumpObjectTree())
         self.container.addItem()
-        # layoutWidget = self.__scroll__.widget()
-
-        # last = self.functionWidgets[-1]
-        # widget = FunctionWidget(parent=layoutWidget, index=len(self.functionWidgets))
-
-        # if len(self.functionWidgets)%3 == 2:
-        #    layoutWidget.resize(layoutWidget.width(), layoutWidget.height() + last.height()) 
-
-        # widgetParams = last.widgetParams
-        # widget.setsize(widgetParams[0], widgetParams[1], widgetParams[2])
-        # widget.setposition(0, 10)
-        # widget.setFixedSize(last.size())
 
     def __showError__(self, msg):
-            self.__msgBox__.setText(msg)
-            self.__msgBox__.exec()
+        self.__msgBox__.setText(msg)
+        self.__msgBox__.exec()
+
     def drawclick(self):
         if self.__input_points_num__.text() != '':
             precision = int(self.__input_points_num__.text())
@@ -146,19 +98,16 @@ class MainWindow(QMainWindow):
             else:
                 self.draw(functionWidget, precision)#plotter)
         plt.show(block=False)
-        self.graph.plotter.show()#auto_close=True)
-
-
-                
+        plt.tight_layout()
+        self.graph.plotter.show(auto_close=True)                
 
     def draw(self, functionWidget, precision):
         a, b = functionWidget.getinput()
         if a == '': a = '0' 
         if b == '': b = '0'
-        linfunction = LiniarFunction(b, a, precision)
+        linfunction = LiniarFunction(a, b, precision)
         functionWidget.set_functioninfo(linfunction.info())
         
-        #self.graph.drawtorus(precision)
         colors = self.graph.generatecolors(linfunction.cablenum())
         cables = linfunction.divideoncables()
         self.graph.drawcables(cables, colors)
@@ -168,7 +117,8 @@ class MainWindow(QMainWindow):
             comment = r'$\dfrac{' + str(linfunction.freecoefs[i].numerator)   + r'}' + \
                              r'{' + str(linfunction.freecoefs[i].denominator) + r'}$'
             comments.append(comment)
-        self.graph.drawlineplot(cables, colors, comments, "")
+        title = f"{functionWidget.getname()} {a}x + {b}"
+        self.graph.drawlineplot(cables, colors, comments, title)
          
     def close(self):
         self.graph.close()

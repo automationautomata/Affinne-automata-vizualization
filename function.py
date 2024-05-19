@@ -138,23 +138,24 @@ class LiniarFunction:
                     step_y += direction
             
             points.append(prev)
+            mod1 = lambda val: val%1 if val%1 != 0 else 1
+            lines = []
+            for i in range(1, len(points)):
+                if points[i-1][1] > points[i][1]:
+                    start_y = mod1(points[i-1][1])
+                    end_y = points[i][1]%1
+                else:
+                    end_y = mod1(points[i][1])
+                    start_y = points[i-1][1]%1
+                start_x = points[i-1][0]%1
+                end_x = mod1(points[i][0])
+                line = Line(start_x, start_y, end_x, end_y)
+                lines.append(line.calc(self.precision))
         else:
-            points = [(0, freecoef), (1, freecoef)]
+            line = Line(0, freecoef%1, 1, freecoef%1)
+            lines = [line.calc(self.precision)]
 
-        mod1 = lambda val: val%1 if val%1 != 0 else 1
-        data = []
-        for i in range(1, len(points)):
-            if points[i-1][1] > points[i][1]:
-                start_y = mod1(points[i-1][1])
-                end_y = points[i][1]%1
-            else:
-                end_y = mod1(points[i][1])
-                start_y = points[i-1][1]%1
-            start_x = points[i-1][0]%1
-            end_x = mod1(points[i][0])
-            line = Line(start_x, start_y, end_x, end_y)
-            data.append(line.calc(self.precision))
-        return data
+        return lines
     
     def divideoncables(self):
         cables = []

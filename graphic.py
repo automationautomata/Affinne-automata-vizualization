@@ -14,6 +14,7 @@ class Graph:
     def __init__(self):
         self.plotter = None
         pass
+
     def __planecoords(self, vec):
         proj = vec - (np.dot(vec, self.z_axe)/norm(self.z_axe)**2)*self.z_axe
         proj *= self.radius/norm(proj)
@@ -80,19 +81,8 @@ class Graph:
         return colors
         
     def drawcable(self, cable, color):
-        for t in range(len(cable)):
-            # array = data[t]
-            # start = _toruscoords((array[0][0], array[1][0]))
-            # for i in range(1, min(len(array[0]), len(array[1]))):
-            #     #print(array[0][i-1], array[1][i-1], '|', array[0][i], array[1][i])
-            #     end = _toruscoords((array[0][i], array[1][i]))
-            #     mesh = pv.Line(start, end)
-            #     start = end
-            #     plotter.add_mesh(mesh, show_edges=True, color='k', line_width=10)
-            #     #print("------")
-            # y = array[0]*2*np.pi
-            # x = array[1]*2*np.pi
-            points = self.__toruscoords__(cable[t][1], cable[t][0])
+        for lines in cable:
+            points = self.__toruscoords__(lines[1], lines[0])
             mesh = pv.Spline(np.column_stack(points))
             self.plotter.add_mesh(mesh, show_edges=True, color=color, render_lines_as_tubes=True, 
                                   smooth_shading=True, line_width=10) 
@@ -102,7 +92,7 @@ class Graph:
             self.drawcable(cables[i], colors[i])
         #self.plotter.show() 
 
-    def drawlineplot(self, cables, colors, comments, funclabel):
+    def drawlineplot(self, cables, colors, comments, functitle):
         legend = []
         cur_plot = next(self.plots_generator)
         for (cable, color, comment) in zip(cables, colors, comments):
@@ -111,8 +101,10 @@ class Graph:
                               line[1][0::len(line)-1], color=color[:3])
             legend.append(Line2D([0], [0], color=color[:3], lw=4, label=comment))
         #_, ax = plt.subplots()
-        # ax[plot_pos].title(funclabel) 
-        cur_plot.legend(handles=legend, loc='upper right', framealpha=0.2)
+        cur_plot.set_title(functitle) 
+        cur_plot.legend(bbox_to_anchor=(1.05, 1.0), handles=legend, 
+                        loc='upper right', framealpha=0.2)
+        #cur_plot.tight_layout()
         cur_plot.grid(True)
     
     def close(self):
