@@ -1,0 +1,12 @@
+digraph "packages" {
+rankdir=BT
+charset="utf-8"
+"function" [color="black", label=<function>, shape="box", style="solid"];
+"graph" [color="black", label=<graph>, shape="box", style="solid"];
+"mainwindow" [color="black", label=<mainwindow>, shape="box", style="solid"];
+"plantuml" [color="black", label=<plantuml>, shape="box", style="solid"];
+"widgets" [color="black", label=<widgets>, shape="box", style="solid"];
+"mainwindow" -> "function" [arrowhead="open", arrowtail="none"];
+"mainwindow" -> "graph" [arrowhead="open", arrowtail="none"];
+"mainwindow" -> "widgets" [arrowhead="open", arrowtail="none"];
+}

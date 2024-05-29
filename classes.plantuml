@@ -1,0 +1,294 @@
+@startuml classes
+set namespaceSeparator none
+class ".ndarray" as .ndarray {
+  T : ndarray
+  base : NoneType
+  ctypes : NoneType
+  data : NoneType
+  dtype : NoneType
+  flags : NoneType
+  flat : ndarray
+  imag : ndarray
+  itemsize : NoneType
+  nbytes : NoneType
+  ndim : NoneType
+  real : ndarray
+  shape : ndarray
+  size : NoneType
+  strides : NoneType
+  all(axis, out, keepdims)
+  any(axis, out, keepdims)
+  argmax(axis, out)
+  argmin(axis, out)
+  argpartition(kth, axis, kind, order)
+  argsort(axis, kind, order)
+  astype(dtype, order, casting, subok, copy)
+  byteswap(inplace)
+  choose(choices, out, mode)
+  clip(min, max, out)
+  compress(condition, axis, out)
+  conj()
+  conjugate()
+  copy(order)
+  cumprod(axis, dtype, out)
+  cumsum(axis, dtype, out)
+  diagonal(offset, axis1, axis2)
+  dot(b, out)
+  dump(file)
+  dumps()
+  fill(value)
+  flatten(order)
+  getfield(dtype, offset)
+  item()
+  itemset()
+  max(axis, out)
+  mean(axis, dtype, out, keepdims)
+  min(axis, out, keepdims)
+  newbyteorder(new_order)
+  nonzero()
+  partition(kth, axis, kind, order)
+  prod(axis, dtype, out, keepdims)
+  ptp(axis, out)
+  put(indices, values, mode)
+  ravel(order)
+  repeat(repeats, axis)
+  reshape(shape, order)
+  resize(new_shape, refcheck)
+  round(decimals, out)
+  searchsorted(v, side, sorter)
+  setfield(val, dtype, offset)
+  setflags(write, align, uic)
+  sort(axis, kind, order)
+  squeeze(axis)
+  std(axis, dtype, out, ddof, keepdims)
+  sum(axis, dtype, out, keepdims)
+  swapaxes(axis1, axis2)
+  take(indices, axis, out, mode)
+  tobytes(order)
+  tofile(fid, sep, format)
+  tolist()
+  tostring(order)
+  trace(offset, axis1, axis2, dtype, out)
+  transpose()
+  var(axis, dtype, out, ddof, keepdims)
+  view(dtype, type)
+}
+class ".ndarray" as .ndarray {
+  T : ndarray
+  base : NoneType
+  ctypes : NoneType
+  data : NoneType
+  dtype : NoneType
+  flags : NoneType
+  flat : ndarray
+  imag : ndarray
+  itemsize : NoneType
+  nbytes : NoneType
+  ndim : NoneType
+  real : ndarray
+  shape : ndarray
+  size : NoneType
+  strides : NoneType
+  all(axis, out, keepdims)
+  any(axis, out, keepdims)
+  argmax(axis, out)
+  argmin(axis, out)
+  argpartition(kth, axis, kind, order)
+  argsort(axis, kind, order)
+  astype(dtype, order, casting, subok, copy)
+  byteswap(inplace)
+  choose(choices, out, mode)
+  clip(min, max, out)
+  compress(condition, axis, out)
+  conj()
+  conjugate()
+  copy(order)
+  cumprod(axis, dtype, out)
+  cumsum(axis, dtype, out)
+  diagonal(offset, axis1, axis2)
+  dot(b, out)
+  dump(file)
+  dumps()
+  fill(value)
+  flatten(order)
+  getfield(dtype, offset)
+  item()
+  itemset()
+  max(axis, out)
+  mean(axis, dtype, out, keepdims)
+  min(axis, out, keepdims)
+  newbyteorder(new_order)
+  nonzero()
+  partition(kth, axis, kind, order)
+  prod(axis, dtype, out, keepdims)
+  ptp(axis, out)
+  put(indices, values, mode)
+  ravel(order)
+  repeat(repeats, axis)
+  reshape(shape, order)
+  resize(new_shape, refcheck)
+  round(decimals, out)
+  searchsorted(v, side, sorter)
+  setfield(val, dtype, offset)
+  setflags(write, align, uic)
+  sort(axis, kind, order)
+  squeeze(axis)
+  std(axis, dtype, out, ddof, keepdims)
+  sum(axis, dtype, out, keepdims)
+  swapaxes(axis1, axis2)
+  take(indices, axis, out, mode)
+  tobytes(order)
+  tofile(fid, sep, format)
+  tolist()
+  tostring(order)
+  trace(offset, axis1, axis2, dtype, out)
+  transpose()
+  var(axis, dtype, out, ddof, keepdims)
+  view(dtype, type)
+}
+class ".ndarray" as .ndarray {
+  T : ndarray
+  base : NoneType
+  ctypes : NoneType
+  data : NoneType
+  dtype : NoneType
+  flags : NoneType
+  flat : ndarray
+  imag : ndarray
+  itemsize : NoneType
+  nbytes : NoneType
+  ndim : NoneType
+  real : ndarray
+  shape : ndarray
+  size : NoneType
+  strides : NoneType
+  all(axis, out, keepdims)
+  any(axis, out, keepdims)
+  argmax(axis, out)
+  argmin(axis, out)
+  argpartition(kth, axis, kind, order)
+  argsort(axis, kind, order)
+  astype(dtype, order, casting, subok, copy)
+  byteswap(inplace)
+  choose(choices, out, mode)
+  clip(min, max, out)
+  compress(condition, axis, out)
+  conj()
+  conjugate()
+  copy(order)
+  cumprod(axis, dtype, out)
+  cumsum(axis, dtype, out)
+  diagonal(offset, axis1, axis2)
+  dot(b, out)
+  dump(file)
+  dumps()
+  fill(value)
+  flatten(order)
+  getfield(dtype, offset)
+  item()
+  itemset()
+  max(axis, out)
+  mean(axis, dtype, out, keepdims)
+  min(axis, out, keepdims)
+  newbyteorder(new_order)
+  nonzero()
+  partition(kth, axis, kind, order)
+  prod(axis, dtype, out, keepdims)
+  ptp(axis, out)
+  put(indices, values, mode)
+  ravel(order)
+  repeat(repeats, axis)
+  reshape(shape, order)
+  resize(new_shape, refcheck)
+  round(decimals, out)
+  searchsorted(v, side, sorter)
+  setfield(val, dtype, offset)
+  setflags(write, align, uic)
+  sort(axis, kind, order)
+  squeeze(axis)
+  std(axis, dtype, out, ddof, keepdims)
+  sum(axis, dtype, out, keepdims)
+  swapaxes(axis1, axis2)
+  take(indices, axis, out, mode)
+  tobytes(order)
+  tofile(fid, sep, format)
+  tolist()
+  tostring(order)
+  trace(offset, axis1, axis2, dtype, out)
+  transpose()
+  var(axis, dtype, out, ddof, keepdims)
+  view(dtype, type)
+}
+class "function.Line" as function.LiniarFunction.Line {
+  x1
+  x2
+  y1
+  y2
+  calc(number)
+}
+class "function.LiniarFunction" as function.LiniarFunction {
+  freecoef_2adic : tuple
+  freecoef_rat : Fraction
+  freecoefs : list
+  precision
+  slopecoef_2adic : tuple
+  slopecoef_rat : Fraction
+  cablenum()
+  divideoncables()
+  divideonlines(freecoef_rat)
+  fractionTo2adic(rational)
+  info()
+  multiplicativeOrder(A, N)
+}
+class "graph.Graph" as graph.Graph {
+  lp : NoneType
+  major_radius
+  minor_radius
+  plot_limits : list
+  plots_generator
+  plotter : NoneType
+  x_axe
+  y_axe
+  z_axe
+  close()
+  drawcable(cable, color)
+  drawcables(cables, colors)
+  drawlineplot(cables, colors, comments, functitle)
+  drawtorus(precision, plotter)
+  generatecolors(number)
+  setplotsnum(number)
+}
+class "mainwindow.MainWindow" as mainwindow.MainWindow {
+  container
+  graph
+  addfunction()
+  close()
+  draw(functionWidget, precision)
+  drawclick()
+  onquit()
+}
+class "widgets.FunctionWidget" as widgets.FunctionWidget {
+  small : dict
+  widgetParams : tuple
+  getinput()
+  getname()
+  set_functioninfo(info)
+  setposition(start_x, start_y)
+  setsize(height, label_width, input_width)
+}
+class "widgets.WidgetsContainer" as widgets.WidgetsContainer {
+  Widgets : list
+  container
+  itemargs : tuple
+  iteminitfunc
+  addItem()
+  setItemArgs()
+  setItemInit(initfunc)
+  showwidget()
+}
+.ndarray --* graph.Graph : y_axe
+.ndarray --* graph.Graph : z_axe
+.ndarray --* graph.Graph : x_axe
+graph.Graph --* mainwindow.MainWindow : graph
+widgets.WidgetsContainer --* mainwindow.MainWindow : container
+@enduml

@@ -1,0 +1,75 @@
+@startuml classes
+set namespaceSeparator none
+class "FunctionWidget" as widgets.FunctionWidget {
+  small : dict
+  widgetParams : tuple
+  getinput()
+  getname()
+  set_functioninfo(info)
+  setposition(start_x, start_y)
+  setsize(height, label_width, input_width)
+}
+class "Graph" as graph.Graph {
+  lp : NoneType
+  major_radius
+  minor_radius
+  plot_limits : list
+  plots_generator
+  plotter : NoneType
+  x_axe : ndarray
+  y_axe : ndarray
+  z_axe : ndarray
+  close()
+  drawcable(cable, color)
+  drawcables(cables, colors)
+  drawlineplot(cables, colors, comments, functitle)
+  drawtorus(precision, plotter)
+  generatecolors(number)
+  setplotsnum(number)
+}
+class "Line" as function.Line {
+  x1
+  x2
+  y1
+  y2
+  calc(number)
+}
+class "LiniarFunction" as function.LiniarFunction {
+  freecoef_2adic : tuple
+  freecoef_rat : Fraction
+  freecoefs : list
+  precision
+  slopecoef_2adic : tuple
+  slopecoef_rat : Fraction
+  cablenum()
+  divideoncables()
+  divideonlines(freecoef_rat)
+  fractionTo2adic(rational)
+  info()
+  multiplicativeOrder(A, N)
+}
+class "MainWindow" as mainwindow.MainWindow {
+  container
+  graph
+  addfunction()
+  close()
+  draw(functionWidget, precision)
+  drawclick()
+  onquit()
+}
+class "WidgetsContainer" as widgets.WidgetsContainer {
+  Widgets : list
+  container
+  itemargs : tuple
+  iteminitfunc
+  addItem()
+  setItemArgs()
+  setItemInit(initfunc)
+  showwidget()
+}
+widgets.FunctionWidget --- mainwindow.MainWindow
+function.Line --o function.LiniarFunction
+function.LiniarFunction -> mainwindow.MainWindow: draw 
+graph.Graph --* mainwindow.MainWindow : graph
+widgets.WidgetsContainer --* mainwindow.MainWindow : container
+@enduml

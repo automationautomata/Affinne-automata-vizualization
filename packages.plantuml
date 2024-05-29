@@ -1,0 +1,17 @@
+@startuml packages
+set namespaceSeparator none
+package "function" as function {
+}
+package "graph" as graph {
+}
+package "main" as main {
+}
+package "mainwindow" as mainwindow {
+}
+package "widgets" as widgets {
+}
+main --> mainwindow
+mainwindow --> function
+mainwindow --> graph
+mainwindow --> widgets
+@enduml

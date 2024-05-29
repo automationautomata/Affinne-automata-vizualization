@@ -13,7 +13,7 @@ class FunctionWidget(QWidget):
 
         self.__label_func__.setFont(QFont('Arial', 15)) 
         self.__label_arg__.setFont(QFont('Arial', 15)) 
-        self.__function_info__.setFont(QFont('Arial', 10))
+        self.__function_info__.setFont(QFont('Arial', 12))
         self.__function_info__.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
 
         smallindex = ''.join([self.small[s] for s in str(index)])

@@ -3,17 +3,20 @@ from PyQt6.QtWidgets import QLabel, QMainWindow, QLineEdit, \
 from PyQt6.QtGui import QFont, QRegularExpressionValidator
 from PyQt6.QtCore import QRegularExpression
 from matplotlib import pyplot as plt
-from graphic import Graph
+from graph import Graph
 from widgets import FunctionWidget, WidgetsContainer
 from function import LiniarFunction
-from pyvista import Plotter
+import pyvistaqt  as pvqt
 from sys import maxsize
+#from pyvistaqt import BackgroundPlotter
 
 class MainWindow(QMainWindow):
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, app=None):
         super().__init__(parent)
         self._setup_ui()
         self.graph = Graph()
+        self.graph.plotter = pvqt.BackgroundPlotter(show=False, app=app)
+        self.check = False
 
     def _setup_ui(self, label_width = 80, std_height = 30, input_width = 140, 
                   size_width = 1000, size_height = 500, func_height = 100, scroll_width = 430):
@@ -86,7 +89,7 @@ class MainWindow(QMainWindow):
             self.__showError__("Error: enter precision")
             return
         self.graph.close()
-        self.graph.plotter = Plotter(line_smoothing=True, polygon_smoothing=True)
+        self.graph.plotter = pv.Plotter(line_smoothing=True, polygon_smoothing=True)
         self.graph.drawtorus(precision)
         self.graph.setplotsnum(len(self.container.Widgets))
         for functionWidget in self.container.Widgets:
@@ -95,11 +98,12 @@ class MainWindow(QMainWindow):
                 self.__showError__("Error: slope coefficient isn't correct")
             elif '/' in a and int(a[-1]) % 2 == 0:
                 self.__showError__("Error: free coefficient isn't correct")
-            else:
+            elif not (a == '' and b == ''):
                 self.draw(functionWidget, precision)#plotter)
         plt.show(block=False)
         plt.tight_layout()
-        self.graph.plotter.show(auto_close=True)                
+        self.graph.plotter.show(auto_close=self.check)   
+        self.check = True             
 
     def draw(self, functionWidget, precision):
         a, b = functionWidget.getinput()
@@ -120,6 +124,9 @@ class MainWindow(QMainWindow):
         title = f"{functionWidget.getname()} {a}x + {b}"
         self.graph.drawlineplot(cables, colors, comments, title)
          
-    def close(self):
-        self.graph.close()
-        return super().close()
+    # def close(self):
+    #     self.graph.close()
+    #     self.graph.plotter.close_all()
+    #     del self.graph.plotter
+    #     return super().close()
+

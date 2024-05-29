@@ -11,13 +11,14 @@ class Graph:
     y_axe = np.array([0, major_radius, 0])
     z_axe = np.array([0, 0, minor_radius])
     x_axe = np.array([minor_radius, 0, 0])
+    plot_limits = [0, 1]
     def __init__(self):
         self.plotter = None
         pass
 
     def __planecoords(self, vec):
         proj = vec - (np.dot(vec, self.z_axe)/norm(self.z_axe)**2)*self.z_axe
-        proj *= self.radius/norm(proj)
+        proj *= self.major_radius/norm(proj)
         a_y = angle(proj, self.y_axe) 
         if proj[1] < 0:
             a_y = 360 - a_y
@@ -29,7 +30,7 @@ class Graph:
     def __callback(self, mesh, pid):
         if self.lp:
             self.plotter.remove_actor(lp)
-        point = self.grid.points[pid]
+        point = mesh.points[pid]
         label = [f'ID: {pid}\n: {self.__planecoords(point)}\n {point}']
         lp = self.plotter.add_point_labels(point, label, name="label")
     
@@ -63,8 +64,8 @@ class Graph:
   
         # self.plotter.add_mesh(self.grid, scalars=self.grid.points[:, -1], show_edges=True,
         #                 scalar_bar_args={'vertical': True}, pickable=True)
-        # self.plotter.enable_point_picking(callback=self.__callback, show_message=True, use_mesh=True, 
-        #                             show_point=True, point_size=10, left_clicking=True)
+        self.plotter.enable_point_picking(callback=self.__callback, show_message=True, use_mesh=True, 
+                                    show_point=True, point_size=10, left_clicking=True)
         self.plotter.show_grid()
 
     def setplotsnum(self, number):
@@ -102,13 +103,15 @@ class Graph:
             legend.append(Line2D([0], [0], color=color[:3], lw=4, label=comment))
         #_, ax = plt.subplots()
         cur_plot.set_title(functitle) 
-        cur_plot.legend(bbox_to_anchor=(1.05, 1.0), handles=legend, 
+        cur_plot.legend(bbox_to_anchor=(1.2, 1.0), handles=legend, 
                         loc='upper right', framealpha=0.2)
         #cur_plot.tight_layout()
+        cur_plot.set_xlim(self.plot_limits)
+        cur_plot.set_ylim(self.plot_limits)
         cur_plot.grid(True)
     
     def close(self):
         plt.close('all')
         if self.plotter:
-            self.plotter.close()
             self.plotter.deep_clean()
+            self.plotter.close()

@@ -2,19 +2,20 @@ from fractions import Fraction
 from math import gcd, floor
 import numpy as np
 
-class Line:
-    def __init__(self, x1, y1, x2, y2):
-        self.x1, self.x2 = x1, x2
-        self.y1, self.y2 = y1, y2
-    
-    def calc(self, number):
-        x = np.linspace(self.x1, self.x2, number)
-        k = (self.y2 - self.y1) / (self.x2 - self.x1)
-        b = self.y1 - self.x1*k
-        y = x*k + b
-        return x, y
-    
+
 class LiniarFunction:
+    class Line:
+        def __init__(self, x1, y1, x2, y2):
+            self.x1, self.x2 = x1, x2
+            self.y1, self.y2 = y1, y2
+        
+        def calc(self, number):
+            x = np.linspace(self.x1, self.x2, number)
+            k = (self.y2 - self.y1) / (self.x2 - self.x1)
+            b = self.y1 - self.x1*k
+            y = x*k + b
+            return x, y
+    
     def __init__(self, slopecoef, freecoef, precision):
         self.precision = precision
         self.slopecoef_rat = Fraction(slopecoef)
@@ -73,11 +74,10 @@ class LiniarFunction:
     
     def info(self):
         format = lambda s: f"...({(s[2] - len(s[1]))*'0'}{s[1]}){(s[3] - len(s[0]))*'0'}{s[0]}"
-
         numbers_info = f"{self.freecoef_rat} = {format(self.freecoef_2adic)}\
                         \n{self.slopecoef_rat} = {format(self.slopecoef_2adic)}"
-        cable_info = f"number of cables: {self.cablenum()}\n" #cable turns around the inner circle: {}"
-        return f"{numbers_info}\n\n{cable_info}"
+        cable_info = f"number of cables: {self.cablenum()}" #cable turns around the inner circle: {}"
+        return f"{numbers_info}\n{cable_info}"
     
     def divideonlines(self, freecoef_rat):
         freecoef = float(freecoef_rat)
@@ -118,7 +118,7 @@ class LiniarFunction:
             else:
                 prev = cur_x
                 step_x += 1
-                st_y += direction
+                step_y += direction
 
             while not compare(points[0], prev):
                 points.append(prev)
@@ -136,8 +136,8 @@ class LiniarFunction:
                     prev = cur_x
                     step_x += 1
                     step_y += direction
-            
             points.append(prev)
+            
             mod1 = lambda val: val%1 if val%1 != 0 else 1
             lines = []
             for i in range(1, len(points)):
@@ -149,12 +149,11 @@ class LiniarFunction:
                     start_y = points[i-1][1]%1
                 start_x = points[i-1][0]%1
                 end_x = mod1(points[i][0])
-                line = Line(start_x, start_y, end_x, end_y)
+                line = LiniarFunction.Line(start_x, start_y, end_x, end_y)
                 lines.append(line.calc(self.precision))
         else:
-            line = Line(0, freecoef%1, 1, freecoef%1)
+            line = LiniarFunction.Line(0, freecoef%1, 1, freecoef%1)
             lines = [line.calc(self.precision)]
-
         return lines
     
     def divideoncables(self):

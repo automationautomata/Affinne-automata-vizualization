@@ -11,8 +11,8 @@ app = QApplication(argv)
 # Создаём виджет Qt — окно.
 window = MainWindow()
 window.show()
+window.graph.close()
 exit(app.exec())
-
 # # Запускаем цикл событий.
 # from math import ceil
 # import numpy as np
