@@ -123,10 +123,4 @@ class MainWindow(QMainWindow):
             comments.append(comment)
         title = f"{functionWidget.getname()} {a}x + {b}"
         self.graph.drawlineplot(cables, colors, comments, title)
-         
-    # def close(self):
-    #     self.graph.close()
-    #     self.graph.plotter.close_all()
-    #     del self.graph.plotter
-    #     return super().close()
 

@@ -60,16 +60,12 @@ class Graph:
         self.plotter.add_mesh(pv.StructuredGrid(x, y, z), style="surface", show_edges=True,
                scalar_bar_args={'vertical': True}, color="pink", pickable=True, smooth_shading=True)
 
-        # Define a simple linear surface
-  
-        # self.plotter.add_mesh(self.grid, scalars=self.grid.points[:, -1], show_edges=True,
-        #                 scalar_bar_args={'vertical': True}, pickable=True)
         self.plotter.enable_point_picking(callback=self.__callback, show_message=True, use_mesh=True, 
                                     show_point=True, point_size=10, left_clicking=True)
         self.plotter.show_grid()
 
     def setplotsnum(self, number):
-        figure, axes = plt.subplots(ncols=number//5 + 1, nrows=number - number//5, squeeze=False) 
+        _, axes = plt.subplots(ncols=number//5 + 1, nrows=number - number//5, squeeze=False) 
         self.plots_generator = axes.flat
 
     def generatecolors(self, number):
@@ -91,7 +87,6 @@ class Graph:
     def drawcables(self, cables, colors):
         for i in range(len(cables)):
             self.drawcable(cables[i], colors[i])
-        #self.plotter.show() 
 
     def drawlineplot(self, cables, colors, comments, functitle):
         legend = []
@@ -101,11 +96,9 @@ class Graph:
                 cur_plot.plot(line[0][0::len(line)-1], 
                               line[1][0::len(line)-1], color=color[:3])
             legend.append(Line2D([0], [0], color=color[:3], lw=4, label=comment))
-        #_, ax = plt.subplots()
         cur_plot.set_title(functitle) 
         cur_plot.legend(bbox_to_anchor=(1.2, 1.0), handles=legend, 
                         loc='upper right', framealpha=0.2)
-        #cur_plot.tight_layout()
         cur_plot.set_xlim(self.plot_limits)
         cur_plot.set_ylim(self.plot_limits)
         cur_plot.grid(True)
