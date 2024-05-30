@@ -15,8 +15,6 @@ class MainWindow(QMainWindow):
         super().__init__(parent)
         self._setup_ui()
         self.graph = Graph()
-        self.graph.plotter = pvqt.BackgroundPlotter(show=False, app=app)
-        self.check = False
 
     def _setup_ui(self, label_width = 80, std_height = 30, input_width = 140, 
                   size_width = 1000, size_height = 500, func_height = 100, scroll_width = 430):
@@ -89,7 +87,10 @@ class MainWindow(QMainWindow):
             self.__showError__("Error: enter precision")
             return
         self.graph.close()
-        self.graph.plotter = pv.Plotter(line_smoothing=True, polygon_smoothing=True)
+        if not self.graph.plotter:
+           self.graph.plotter = pvqt.BackgroundPlotter(line_smoothing=True, polygon_smoothing=True)
+        else: self.graph.plotter.show()
+        #self.graph.plotter = pvqt.BackgroundPlotter(line_smoothing=True, polygon_smoothing=True)
         self.graph.drawtorus(precision)
         self.graph.setplotsnum(len(self.container.Widgets))
         for functionWidget in self.container.Widgets:
@@ -102,8 +103,7 @@ class MainWindow(QMainWindow):
                 self.draw(functionWidget, precision)#plotter)
         plt.show(block=False)
         plt.tight_layout()
-        self.graph.plotter.show(auto_close=self.check)   
-        self.check = True             
+           
 
     def draw(self, functionWidget, precision):
         a, b = functionWidget.getinput()
@@ -123,4 +123,10 @@ class MainWindow(QMainWindow):
             comments.append(comment)
         title = f"{functionWidget.getname()} {a}x + {b}"
         self.graph.drawlineplot(cables, colors, comments, title)
+         
+    # def close(self):
+    #     self.graph.close()
+    #     self.graph.plotter.close_all()
+    #     del self.graph.plotter
+    #     return super().close()
 

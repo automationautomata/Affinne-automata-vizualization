@@ -107,4 +107,4 @@ class Graph:
         plt.close('all')
         if self.plotter:
             self.plotter.deep_clean()
-            self.plotter.close()
+            #self.plotter.close()
