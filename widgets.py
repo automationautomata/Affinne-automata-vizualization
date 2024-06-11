@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QWidget, QLabel, QLineEdit, QGridLayout, QScrollArea, QPushButton
+from PyQt6.QtWidgets import QWidget, QLabel, QLineEdit, QScrollArea
 from PyQt6.QtGui import QFont, QRegularExpressionValidator
 from PyQt6.QtCore import QRegularExpression, Qt
 
@@ -94,8 +94,8 @@ class WidgetsContainer(QWidget):
         if self.iteminitfunc: 
             item = self.iteminitfunc(*self.itemargs)
             item.setParent(self.container)
-            if len(self.Widgets) % 4 == 1:
-                self.container.resize(self.width(), self.height() + self.Widgets[-1].height())
+            if len(self.Widgets)*item.height()*2 > self.container.height():
+                self.container.resize(self.container.width(), self.container.height()+item.height())
 
             if len(self.Widgets) != 0:
                 item.move(0, self.Widgets[-1].y()+self.Widgets[-1].height())
