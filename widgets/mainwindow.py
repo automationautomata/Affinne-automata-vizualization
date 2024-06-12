@@ -3,9 +3,9 @@ from PyQt6.QtWidgets import QLabel, QMainWindow, QLineEdit, \
 from PyQt6.QtGui import QFont, QRegularExpressionValidator
 from PyQt6.QtCore import QRegularExpression
 from matplotlib import pyplot as plt
-from graph import Graph
-from widgets import FunctionWidget, WidgetsContainer
-from function import LiniarFunction
+from Tools.graph import Graph
+from widgets.widgets import FunctionWidget, WidgetsContainer
+from Tools.function import LiniarFunction
 import pyvistaqt as pvqt
 from sys import maxsize
 
