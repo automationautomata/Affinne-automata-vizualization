@@ -7,6 +7,6 @@
 - [x] show separately - show all plots separately each in it's own matplotlib window
  
 > [!Warning]
-> Plot for function will be drawn only if coefficient are rational p-adic integers
+> Plot of the function will be drawn only if the coefficients are rational a p-adic integers.
 
 If one of the coefficients isn't been entered it's assuming to be 0.
