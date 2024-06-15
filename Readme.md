@@ -12,3 +12,4 @@
 If one of the coefficients isn't been entered it's assuming to be 0.
 
 Click on isometric (on PyVista plotter) for normal interaction.
+![example](example.gif)
