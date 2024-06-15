@@ -1,5 +1,5 @@
 from PyQt6.QtWidgets import QApplication
-from mainwindow import MainWindow
+from widgets.mainwindow import MainWindow
 from sys import exit, argv
 
 # Только для доступа к аргументам командной строки

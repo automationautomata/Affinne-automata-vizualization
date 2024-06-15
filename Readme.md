@@ -10,3 +10,5 @@
 > Plot of the function will be drawn only if the coefficients are rational a p-adic integers.
 
 If one of the coefficients isn't been entered it's assuming to be 0.
+
+Click on isometric (on PyVista plotter) for normal interaction.
